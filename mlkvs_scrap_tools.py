@@ -1,8 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
+# webscrapping tools
 
 import pandas as pd
 from bs4 import BeautifulSoup

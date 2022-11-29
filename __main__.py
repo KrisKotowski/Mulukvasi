@@ -1,7 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[16]:
+#main project file
 
 import mlkvs_scrap_brokers as p
 import mlkvs_scrap_tools as s
