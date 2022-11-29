@@ -1,0 +1,27 @@
+2022-11-21 23:44:04,481|thread:9220|DEBUG|start openning DB
+2022-11-21 23:44:04,481|thread:9220|DEBUG|start reading ini file
+2022-11-21 23:44:04,482|thread:9220|DEBUG|done reading ini file
+2022-11-21 23:44:04,777|thread:9220|DEBUG|done openning DB
+2022-11-21 23:44:04,778|thread:9220|DEBUG|start fetching dataframe from SQL: "select steps, delay_seconds, log_level_file, log_level_console from scrap_param"
+2022-11-21 23:44:04,850|thread:9220|DEBUG|done fetching dataframe from SQL: "select steps, delay_seconds, log_level_file, log_level_console from scrap_param"
+2022-11-21 23:44:04,905|thread:9220|INFO|PROGRAM START: initialization success
+2022-11-21 23:44:04,905|thread:9220|INFO|start scraping
+2022-11-21 23:44:04,905|thread:9220|INFO|starting step 1...
+2022-11-21 23:44:04,907|thread:5668|INFO|Cinkciarz start file download "https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=10"
+2022-11-21 23:44:04,908|thread:3436|INFO|Cinkciarz start file download "https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=50000"
+2022-11-21 23:44:04,908|thread:24208|INFO|InternetowyKantor start file download "https://klient.internetowykantor.pl/api/public/marketBrief"
+2022-11-21 23:44:05,005|thread:24208|INFO|InternetowyKantor done file download in 0.10 sec. "https://klient.internetowykantor.pl/api/public/marketBrief"
+2022-11-21 23:44:05,083|thread:3436|INFO|Cinkciarz done file download in 0.17 sec. "https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=50000"
+2022-11-21 23:44:05,204|thread:5668|INFO|Cinkciarz done file download in 0.30 sec. "https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=10"
+2022-11-21 23:44:06,023|thread:9220|INFO|done step 1...
+2022-11-21 23:44:06,023|thread:9220|INFO|sleeping for 3 seconds...
+2022-11-21 23:44:09,023|thread:9220|INFO|starting step 2...
+2022-11-21 23:44:09,025|thread:6012|INFO|Cinkciarz start file download "https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=10"
+2022-11-21 23:44:09,025|thread:6892|INFO|Cinkciarz start file download "https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=50000"
+2022-11-21 23:44:09,026|thread:9496|INFO|InternetowyKantor start file download "https://klient.internetowykantor.pl/api/public/marketBrief"
+2022-11-21 23:44:09,115|thread:9496|INFO|InternetowyKantor done file download in 0.09 sec. "https://klient.internetowykantor.pl/api/public/marketBrief"
+2022-11-21 23:44:09,185|thread:6012|INFO|Cinkciarz done file download in 0.16 sec. "https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=10"
+2022-11-21 23:44:09,292|thread:6892|INFO|Cinkciarz done file download in 0.27 sec. "https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=50000"
+2022-11-21 23:44:10,152|thread:9220|INFO|done step 2...
+2022-11-21 23:44:10,152|thread:9220|INFO|done scraping
+2022-11-21 23:44:10,152|thread:9220|INFO|PROGRAM END

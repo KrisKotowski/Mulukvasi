@@ -1,0 +1,33 @@
+2022-11-21 23:39:29,934|thread:24024|DEBUG|start openning DB
+2022-11-21 23:39:29,934|thread:24024|DEBUG|start reading ini file
+2022-11-21 23:39:29,935|thread:24024|DEBUG|done reading ini file
+2022-11-21 23:39:30,236|thread:24024|DEBUG|done openning DB
+2022-11-21 23:39:30,237|thread:24024|DEBUG|start fetching dataframe from SQL: "select steps, delay_seconds, log_level_file, log_level_console from scrap_param"
+2022-11-21 23:39:30,296|thread:24024|DEBUG|done fetching dataframe from SQL: "select steps, delay_seconds, log_level_file, log_level_console from scrap_param"
+2022-11-21 23:39:30,346|thread:24024|INFO|PROGRAM START: initialization success
+2022-11-21 23:39:30,347|thread:24024|INFO|start scraping
+2022-11-21 23:39:30,347|thread:24024|INFO|starting step 1...
+2022-11-21 23:39:30,348|thread:24212|INFO|Cinkciarz start file download "https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=10"
+2022-11-21 23:39:30,349|thread:13064|INFO|InternetowyKantor start file download "https://klient.internetowykantor.pl/api/public/marketBrief"
+2022-11-21 23:39:30,350|thread:26828|INFO|Cinkciarz start file download "https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=50000"
+2022-11-21 23:39:30,441|thread:13064|INFO|InternetowyKantor done file download in 0.09 sec. "https://klient.internetowykantor.pl/api/public/marketBrief"
+2022-11-21 23:39:30,512|thread:26828|INFO|Cinkciarz done file download in 0.16 sec. "https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=50000"
+2022-11-21 23:39:30,613|thread:24212|INFO|Cinkciarz done file download in 0.26 sec. "https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=10"
+2022-11-21 23:39:30,646|thread:24024|ERROR|error during scraping
+Traceback (most recent call last):
+  File "C:\Users\1013759\Dropbox\Project\Mulukvasi\__main__.py", line 56, in <module>
+    i_dftable_final = pd.merge(i_dftable_final, gv.G_PAIRS, on='pair', how='right')
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1013759\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\reshape\merge.py", line 110, in merge
+    op = _MergeOperation(
+         ^^^^^^^^^^^^^^^^
+  File "C:\Users\1013759\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\reshape\merge.py", line 703, in __init__
+    ) = self._get_merge_keys()
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1013759\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\reshape\merge.py", line 1179, in _get_merge_keys
+    left_keys.append(left._get_label_or_level_values(lk))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\1013759\AppData\Local\Programs\Python\Python311\Lib\site-packages\pandas\core\generic.py", line 1850, in _get_label_or_level_values
+    raise KeyError(key)
+KeyError: 'pair'
+2022-11-21 23:39:30,652|thread:24024|ERROR|program halted
