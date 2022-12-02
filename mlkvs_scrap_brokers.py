@@ -30,14 +30,20 @@ class ScrapCinkciarz:
         i_url_content = gv.G_URL.get_url_content(a_url)
         i_end_time = time.time()
 
-        if i_url_content.status_code != gv.G_URL.C_URL_SUCCESS:
-            gv.G_LOGGER.info(
-                '{0} file download failed, status code: {1} "{2}"'.format(self.C_BROKER_NAME, i_url_content.status_code,
-                                                                          a_url))
+        if i_url_content is None:
+            gv.G_LOGGER.error(
+                '{0} file download failed, timeout "{1}"'.format(self.C_BROKER_NAME, a_url))
             return None
         else:
-            gv.G_LOGGER.info('{0} done file download in {1} sec. "{2}"'.format(self.C_BROKER_NAME, '{:.2f}'.format(
-                i_end_time - i_start_time), a_url))
+            if i_url_content.status_code != gv.G_URL.C_URL_SUCCESS:
+                gv.G_LOGGER.error(
+                    '{0} file download failed, status code: {1} "{2}"'.format(self.C_BROKER_NAME,
+                                                                              i_url_content.status_code,
+                                                                              a_url))
+                return None
+            else:
+                gv.G_LOGGER.info('{0} done file download in {1} sec. "{2}"'.format(self.C_BROKER_NAME, '{:.2f}'.format(
+                    i_end_time - i_start_time), a_url))
 
         # html to table
         dftable = s.get_soup_table(i_url_content)
@@ -64,8 +70,9 @@ class ScrapCinkciarz:
 
         for index, row in self.c_df_urls.iterrows():
             x = s.ThreadWithReturnValue(target=self.read_single_file, args=(row['url'], row['price_type']))
-            i_threads.append(x)
-            x.start()
+            if x is not None:
+                i_threads.append(x)
+                x.start()
 
         for index, thread in enumerate(i_threads):
             i_df_output = thread.join()
@@ -91,14 +98,20 @@ class ScrapIK:
         i_url_content = gv.G_URL.get_url_content(a_url)
         i_end_time = time.time()
 
-        if i_url_content.status_code != gv.G_URL.C_URL_SUCCESS:
-            gv.G_LOGGER.info(
-                '{0} file download failed, status code: {1} "{2}"'.format(self.C_BROKER_NAME, i_url_content.status_code,
-                                                                          a_url))
+        if i_url_content is None:
+            gv.G_LOGGER.error(
+                '{0} file download failed, timeout "{1}"'.format(self.C_BROKER_NAME, a_url))
             return None
         else:
-            gv.G_LOGGER.info('{0} done file download in {1} sec. "{2}"'.format(self.C_BROKER_NAME, '{:.2f}'.format(
-                i_end_time - i_start_time), a_url))
+            if i_url_content.status_code != gv.G_URL.C_URL_SUCCESS:
+                gv.G_LOGGER.error(
+                    '{0} file download failed, status code: {1} "{2}"'.format(self.C_BROKER_NAME,
+                                                                              i_url_content.status_code,
+                                                                              a_url))
+                return None
+            else:
+                gv.G_LOGGER.info('{0} done file download in {1} sec. "{2}"'.format(self.C_BROKER_NAME, '{:.2f}'.format(
+                    i_end_time - i_start_time), a_url))
 
         # json to table
         dftable = s.get_json_table(i_url_content.json())
