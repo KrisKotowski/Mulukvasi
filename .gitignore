@@ -1,0 +1,5 @@
+database.ini
+/log
+/Analysis
+/Backup
+*.pyc
