@@ -32,7 +32,7 @@ def init(a_mode=0):
     G_LOGGER = logging.getLogger()
     G_LOGGER.setLevel(logging.INFO)
 
-    i_formatter = logging.Formatter('%(asctime)s|thread:%(thread)d|%(levelname)s|%(message)s')
+    i_formatter = logging.Formatter('%(asctime)s|%(levelname)s|thread:%(thread)d|%(message)s')
 
     i_file_handler = logging.FileHandler(i_log_file)
     i_file_handler.setFormatter(i_formatter)
