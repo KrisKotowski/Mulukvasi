@@ -30,7 +30,7 @@ def init(a_mode=0):
 
     global G_LOGGER
     G_LOGGER = logging.getLogger()
-    G_LOGGER.setLevel(logging.DEBUG)
+    G_LOGGER.setLevel(logging.INFO)
 
     i_formatter = logging.Formatter('%(asctime)s|thread:%(thread)d|%(levelname)s|%(message)s')
 
@@ -72,8 +72,8 @@ def init(a_mode=0):
     if G_PROGRAM_MODE != G_CONST_MODE_PROD:
         G_STEPS = 2
         G_DELAY_SECONDS = 3
-        i_log_level_file = 10
-        i_log_level_console = 20
+        i_log_level_file = logging.DEBUG
+        i_log_level_console = logging.INFO
 
     i_file_handler.setLevel(i_log_level_file)
     i_console_handler.setLevel(i_log_level_console)
