@@ -1,4 +1,4 @@
-#main project file
+# main project file
 
 import mlkvs_scrap_brokers as p
 import mlkvs_scrap_tools as s
@@ -9,7 +9,20 @@ import sys
 
 try:
     # initialize global vars
-    gv.init()
+
+    if len(sys.argv) > 1:
+        if str(sys.argv[1]) == '0':
+            print('PROGRAM running in production mode.')
+        elif str(sys.argv[1]) == '1':
+            print('PROGRAM running in test mode with saving to DB. 2 steps, 3 seconds delay.')
+        elif str(sys.argv[1]) == '2':
+            print('PROGRAM running in test mode without saving to DB. 2 steps, 3 seconds delay.')
+        else:
+            print('Unknown argument passed [{0}] !!!'.format(str(sys.argv[1])))
+            sys.exit()
+        gv.init(int(sys.argv[1]))
+    else:
+        gv.init()
 
     # initialize objects
     i_scraps = list()
@@ -17,8 +30,7 @@ try:
     i_scraps.append(p.ScrapIK())
     i_threads = list()
 
-    gv.G_LOGGER.info('PROGRAM START: initialization success')
-
+    gv.G_LOGGER.info('PROGRAM START: initialization success in mode [{0}]'.format(gv.G_PROGRAM_MODE))
 except Exception as e:
     gv.G_LOGGER.error('initialization failed "{0}"'.format(e), exc_info=True)
     gv.G_LOGGER.error('program halted')
@@ -53,15 +65,17 @@ try:
         i_dftable_final = pd.merge(i_dftable_final, gv.G_PAIRS, on='pair', how='right')
 
         # save to DB
-        i_thread_DB = s.ThreadWithReturnValue(target=gv.G_DB.save_hist_db(i_dftable_final))
-        i_thread_DB.start()
+        if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_PROD, gv.G_CONST_MODE_TEST_DB]:
+            i_thread_DB = s.ThreadWithReturnValue(target=gv.G_DB.save_hist_db(i_dftable_final))
+            i_thread_DB.start()
 
         gv.G_LOGGER.info('done step {0}...'.format(i_step))
 
         if i_step < gv.G_STEPS:
             gv.G_LOGGER.info('sleeping for {0} seconds...'.format(gv.G_DELAY_SECONDS))
             time.sleep(gv.G_DELAY_SECONDS)
-            i_thread_DB.join()
+            if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_PROD, gv.G_CONST_MODE_TEST_DB]:
+                i_thread_DB.join()
     gv.G_LOGGER.info('done scraping')
 
 except Exception as e:

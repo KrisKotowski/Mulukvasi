@@ -14,11 +14,19 @@ G_DELAY_SECONDS = 0
 G_SCAN_ID = 0
 G_PAIRS = 0
 G_DB_INI_FILE = 0
+G_PROGRAM_MODE = 0
+
+G_CONST_MODE_PROD = 0
+G_CONST_MODE_TEST_DB = 1
+G_CONST_MODE_TEST_NODB = 2
 
 
-def init():
+def init(a_mode=0):
     # logger init
     i_log_file = pathlib.Path(pathlib.Path(__file__).parent, 'log\\', datetime.now().strftime('%d-%m-%Y__%H-%M-%S.txt'))
+
+    global G_PROGRAM_MODE
+    G_PROGRAM_MODE = a_mode
 
     global G_LOGGER
     G_LOGGER = logging.getLogger()
@@ -44,6 +52,13 @@ def init():
 
     i_df = G_DB.sql_to_df('select steps, delay_seconds, log_level_file, log_level_console from scrap_param')
 
+    global G_SCAN_ID
+    G_SCAN_ID = G_DB.sql_to_single_value('SELECT last_value from scan_scan_id_seq')
+
+    global G_PAIRS
+    G_PAIRS = G_DB.sql_to_df(
+        'select currency1||currency2 pair, currency_pair_id pair_id from currency_pair where status=%s', '1')
+
     global G_STEPS
     G_STEPS = i_df['steps'].iloc[0]
 
@@ -51,17 +66,17 @@ def init():
     G_DELAY_SECONDS = i_df['delay_seconds'].iloc[0]
 
     i_log_level_file = int(i_df['log_level_file'].iloc[0])
-    i_file_handler.setLevel(i_log_level_file)
-
     i_log_level_console = int(i_df['log_level_console'].iloc[0])
+
+    # TEST MODE settings
+    if G_PROGRAM_MODE != G_CONST_MODE_PROD:
+        G_STEPS = 2
+        G_DELAY_SECONDS = 3
+        i_log_level_file = 10
+        i_log_level_console = 20
+
+    i_file_handler.setLevel(i_log_level_file)
     i_console_handler.setLevel(i_log_level_console)
-
-    global G_SCAN_ID
-    G_SCAN_ID = G_DB.sql_to_single_value('SELECT last_value from scan_scan_id_seq')
-
-    global G_PAIRS
-    G_PAIRS = G_DB.sql_to_df(
-        'select currency1||currency2 pair, currency_pair_id pair_id from currency_pair where status=%s', '1')
 
     global G_URL
     G_URL = u.URLTools()
