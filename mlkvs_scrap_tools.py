@@ -1,9 +1,9 @@
 # webscrapping tools
 
-import pandas as pd
-from bs4 import BeautifulSoup
 import threading
 
+import pandas as pd
+from bs4 import BeautifulSoup
 
 class ThreadWithReturnValue(threading.Thread):
 

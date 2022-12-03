@@ -28,6 +28,8 @@ try:
     i_scraps = list()
     i_scraps.append(p.ScrapCinkciarz())
     i_scraps.append(p.ScrapIK())
+    i_scraps.append(p.ScrapTraderMade())
+
     i_threads = list()
 
     gv.G_LOGGER.info('PROGRAM START: initialization success in mode [{0}]'.format(gv.G_PROGRAM_MODE))

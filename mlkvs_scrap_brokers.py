@@ -2,6 +2,50 @@ import pandas as pd
 import mlkvs_scrap_tools as s
 import time
 import global_vars as gv
+import tradermade as tm
+
+
+class ScrapTraderMade:
+    C_BROKER_ID = 3
+    C_BROKER_NAME = 'Tradermade'
+    C_API_KEY = 'DlZmo2SbGyCjzcXyaaPw'
+    C_PRICE_TYPE = 1
+
+    def __init__(self):
+        tm.set_rest_api_key("DlZmo2SbGyCjzcXyaaPw")
+
+    def read_single_file(self):
+
+        try:
+            gv.G_LOGGER.info('{0} start api data download'.format(self.C_BROKER_NAME))
+            i_start_time = time.time()
+            tm.set_rest_api_key("DlZmo2SbGyCjzcXyaaPw")
+            i_result = tm.live(currency='PLNUSD,PLNGBP,CHFPLN,NOKPLN,EURPLN', fields=["bid", "ask"])
+            i_end_time = time.time()
+            gv.G_LOGGER.info('done downloading api data {0} sec.'.format(self.C_BROKER_NAME,
+                             '{:.2f}'.format(i_end_time - i_start_time)))
+        except Exception as e:
+            gv.G_LOGGER.error('error downloading api data "{0}" {1}'.format(e, self.C_BROKER_NAME), exc_info=False)
+            return None
+
+        dftable = pd.DataFrame(i_result, columns=['instrument', 'bid', 'ask'])
+        dftable['pair'] = dftable['instrument']
+        dftable['buy'] = ((dftable['bid']).astype(float) * 10000).apply(int)
+        dftable['sell'] = ((dftable['ask']).astype(float) * 10000).apply(int)
+        dftable['broker'] = self.C_BROKER_ID
+        dftable['rate_type'] = self.C_PRICE_TYPE
+
+        dftable.drop('instrument', axis=1, inplace=True)
+        dftable.drop('bid', axis=1, inplace=True)
+        dftable.drop('ask', axis=1, inplace=True)
+
+
+
+        return dftable
+
+    def read_all_files(self):
+        i_dftable_final = self.read_single_file()
+        return i_dftable_final
 
 
 class ScrapCinkciarz:
@@ -31,15 +75,13 @@ class ScrapCinkciarz:
         i_end_time = time.time()
 
         if i_url_content is None:
-            gv.G_LOGGER.error(
-                '{0} file download failed, timeout "{1}"'.format(self.C_BROKER_NAME, a_url))
+            gv.G_LOGGER.error('{0} file download failed, timeout "{1}"'.format(self.C_BROKER_NAME, a_url))
             return None
         else:
             if i_url_content.status_code != gv.G_URL.C_URL_SUCCESS:
-                gv.G_LOGGER.error(
-                    '{0} file download failed, status code: {1} "{2}"'.format(self.C_BROKER_NAME,
-                                                                              i_url_content.status_code,
-                                                                              a_url))
+                gv.G_LOGGER.error('{0} file download failed, status code: {1} "{2}"'.format(self.C_BROKER_NAME,
+                                                                                            i_url_content.status_code,
+                                                                                            a_url))
                 return None
             else:
                 gv.G_LOGGER.info('{0} done file download in {1} sec. "{2}"'.format(self.C_BROKER_NAME, '{:.2f}'.format(
@@ -99,15 +141,13 @@ class ScrapIK:
         i_end_time = time.time()
 
         if i_url_content is None:
-            gv.G_LOGGER.error(
-                '{0} file download failed, timeout "{1}"'.format(self.C_BROKER_NAME, a_url))
+            gv.G_LOGGER.error('{0} file download failed, timeout "{1}"'.format(self.C_BROKER_NAME, a_url))
             return None
         else:
             if i_url_content.status_code != gv.G_URL.C_URL_SUCCESS:
-                gv.G_LOGGER.error(
-                    '{0} file download failed, status code: {1} "{2}"'.format(self.C_BROKER_NAME,
-                                                                              i_url_content.status_code,
-                                                                              a_url))
+                gv.G_LOGGER.error('{0} file download failed, status code: {1} "{2}"'.format(self.C_BROKER_NAME,
+                                                                                            i_url_content.status_code,
+                                                                                            a_url))
                 return None
             else:
                 gv.G_LOGGER.info('{0} done file download in {1} sec. "{2}"'.format(self.C_BROKER_NAME, '{:.2f}'.format(
