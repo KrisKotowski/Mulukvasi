@@ -30,6 +30,7 @@ try:
     i_scraps.append(p.ScrapIK())
     i_scraps.append(p.ScrapTraderMade())
     i_scraps.append(p.ScrapTradingEconomics())
+    i_scraps.append(p.ScrapBloomberg())
 
     i_threads = list()
 
