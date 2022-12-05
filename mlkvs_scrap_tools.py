@@ -3,7 +3,7 @@
 import threading
 
 import pandas as pd
-from bs4 import BeautifulSoup
+
 
 class ThreadWithReturnValue(threading.Thread):
 
@@ -39,15 +39,6 @@ def convert_html_to_table(table):
     for tr in trs:  # for every table row
         rows.append(row_get_data_text(tr, 'td'))  # data row
     return rows
-
-
-def get_soup_table(a_html_in):
-    i_soup = BeautifulSoup(a_html_in.text, "html.parser")
-    i_htmltable = i_soup.find('table')
-    i_list_table = convert_html_to_table(i_htmltable)
-    i_htmltable.decompose()
-
-    return pd.DataFrame(i_list_table[0:])
 
 
 def get_json_table(a_json_in):

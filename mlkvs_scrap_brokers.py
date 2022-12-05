@@ -3,7 +3,76 @@ import mlkvs_scrap_tools as s
 import time
 import global_vars as gv
 import tradermade as tm
+from bs4 import BeautifulSoup
 
+
+class ScrapTradingEconomics:
+    C_BROKER_ID = 4
+    C_BROKER_NAME = 'TradingEconomics'
+    C_URLS = [["https://tradingeconomics.com/currencies?quote=pln", "1"]]
+    C_PRICE_TYPE = 1
+
+    def __init__(self):
+        self.c_df_urls = pd.DataFrame(self.C_URLS, columns=['url', 'price_type'])
+
+    def read_single_file(self, a_url, a_rate_type):
+
+        def get_soup_table(a_html_in):
+            i_soup = BeautifulSoup(a_html_in.text, "html.parser")
+            i_htmltable = i_soup.find('table')
+            i_list_table = s.convert_html_to_table(i_htmltable)
+            i_htmltable.decompose()
+
+            return pd.DataFrame(i_list_table[0:])
+
+        gv.G_LOGGER.info('{0} start file download "{1}"'.format(self.C_BROKER_NAME, a_url))
+
+        i_start_time = time.time()
+        i_url_content = gv.G_URL.get_url_content(a_url)
+        i_end_time = time.time()
+
+        if i_url_content is None:
+            gv.G_LOGGER.error('{0} file download failed, timeout "{1}"'.format(self.C_BROKER_NAME, a_url))
+            return None
+        else:
+            if i_url_content.status_code != gv.G_URL.C_URL_SUCCESS:
+                gv.G_LOGGER.error('{0} file download failed, status code: {1} "{2}"'.format(self.C_BROKER_NAME,
+                                                                                            i_url_content.status_code,
+                                                                                            a_url))
+                return None
+            else:
+                gv.G_LOGGER.info('{0} done file download in {1} sec. "{2}"'.format(self.C_BROKER_NAME, '{:.2f}'.format(
+                    i_end_time - i_start_time), a_url))
+
+        # html to table
+        dftable2 = get_soup_table(i_url_content)
+        dftable2 = dftable2.drop([0])
+        dftable = pd.DataFrame()
+        dftable['pair'] = dftable2[0]
+        dftable['buy'] = ((dftable2[1]).astype(float) * 10000).apply(int)
+        dftable['sell'] = 0
+        dftable['broker'] = self.C_BROKER_ID
+        dftable['rate_type'] = self.C_PRICE_TYPE
+
+        return dftable
+
+    def read_all_files(self):
+
+        i_threads = list()
+        i_dftable_final = pd.DataFrame()
+
+        for index, row in self.c_df_urls.iterrows():
+            x = s.ThreadWithReturnValue(target=self.read_single_file, args=(row['url'], row['price_type']))
+            if x is not None:
+                i_threads.append(x)
+                x.start()
+
+        for index, thread in enumerate(i_threads):
+            i_df_output = thread.join()
+            i_frames = [i_df_output, i_dftable_final]
+            i_dftable_final = pd.concat(i_frames, ignore_index=True)
+
+        return i_dftable_final
 
 class ScrapTraderMade:
     C_BROKER_ID = 3
@@ -68,6 +137,14 @@ class ScrapCinkciarz:
 
     def read_single_file(self, a_url, a_rate_type):
 
+        def get_soup_table(a_html_in):
+            i_soup = BeautifulSoup(a_html_in.text, "html.parser")
+            i_htmltable = i_soup.find('table')
+            i_list_table = s.convert_html_to_table(i_htmltable)
+            i_htmltable.decompose()
+
+            return pd.DataFrame(i_list_table[0:])
+
         gv.G_LOGGER.info('{0} start file download "{1}"'.format(self.C_BROKER_NAME, a_url))
 
         i_start_time = time.time()
@@ -88,7 +165,7 @@ class ScrapCinkciarz:
                     i_end_time - i_start_time), a_url))
 
         # html to table
-        dftable = s.get_soup_table(i_url_content)
+        dftable = get_soup_table(i_url_content)
         dftable = dftable.drop([0])
         dftable[1] = 1
         dftable[5] = 1
