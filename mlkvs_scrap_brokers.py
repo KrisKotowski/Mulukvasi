@@ -182,7 +182,7 @@ class ScrapTraderMade:
             gv.G_LOGGER.info('{0} start api data download'.format(self.C_BROKER_NAME))
             i_start_time = time.time()
             tm.set_rest_api_key("DlZmo2SbGyCjzcXyaaPw")
-            i_result = tm.live(currency='PLNUSD,PLNGBP,CHFPLN,NOKPLN,EURPLN,EURUSD', fields=["bid", "ask"])
+            i_result = tm.live(currency='USDPLN,EURPLN', fields=["bid", "ask"])
             i_end_time = time.time()
             gv.G_LOGGER.info('done downloading api data {0} sec.'.format(self.C_BROKER_NAME,
                                                                          '{:.2f}'.format(i_end_time - i_start_time)))
@@ -212,9 +212,9 @@ class ScrapCinkciarz:
     C_BROKER_ID = 1
     C_BROKER_NAME = 'Cinkciarz'
     C_URLS = [["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=10", "1"],
-              ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=50000", "2"],
-              ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=EUR&unit=10", "unit price"],
-              ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=EUR&unit=50000", "50K price"],
+              #["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=50000", "2"],
+              #["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=EUR&unit=10", "unit price"],
+              #["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=EUR&unit=50000", "50K price"],
               # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=USD&unit=10", "unit price"],
               # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=USD&unit=50000", "50K price"],
               # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=GBP&unit=10", "unit price"],
