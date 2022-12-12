@@ -1,3 +1,3 @@
-insert into broker (broker_id, descr, webpage, api_key) values (5,'Bloomberg', 'https://www.bloomberg.com/','');
+insert into broker (broker_id, descr, webpage, api_key) values (6,'Revolut', 'https://www.revolut.com/','');
 
 commit;

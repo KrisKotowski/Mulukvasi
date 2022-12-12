@@ -28,6 +28,7 @@ try:
     i_scraps = list()
     i_scraps.append(p.ScrapCinkciarz())
     i_scraps.append(p.ScrapIK())
+    i_scraps.append(p.ScrapRevolut())
 #    i_scraps.append(p.ScrapTraderMade())
 #    i_scraps.append(p.ScrapTradingEconomics())
 #    i_scraps.append(p.ScrapBloomberg())

@@ -15,7 +15,7 @@ G_SCAN_ID = 0
 G_PAIRS = 0
 G_DB_INI_FILE = 0
 G_PROGRAM_MODE = 0
-
+G_OUTPUT_COLUMNS = ['pair', 'buy', 'sell', 'broker', 'rate_type']
 G_CONST_MODE_PROD = 0
 G_CONST_MODE_TEST_DB = 1
 G_CONST_MODE_TEST_NODB = 2
