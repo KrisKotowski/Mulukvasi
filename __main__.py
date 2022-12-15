@@ -43,6 +43,7 @@ try:
         i_instance.C_API_KEY = i_row[3]
         i_scraps.append(i_instance)
 
+    #sys.exit()
     gv.G_LOGGER.info('PROGRAM START: initialization success in mode [{0}]'.format(gv.G_PROGRAM_MODE))
 except Exception as e:
     gv.G_LOGGER.error('initialization failed "{0}"'.format(e), exc_info=True)
@@ -81,7 +82,7 @@ try:
         i_dftable_final = pd.merge(i_dftable_final, gv.G_PAIRS, on='pair', how='right')
 
         if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_TEST_NODB, gv.G_CONST_MODE_TEST_DB]:
-            gv.G_LOGGER.info(i_dftable_final)
+            print(i_dftable_final)
 
         # save to DB
         if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_PROD, gv.G_CONST_MODE_TEST_DB]:
