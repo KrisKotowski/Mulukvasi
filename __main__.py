@@ -29,6 +29,7 @@ try:
     i_scraps.append(p.ScrapCinkciarz())
     i_scraps.append(p.ScrapIK())
     i_scraps.append(p.ScrapRevolut())
+    i_scraps.append(p.ScrapMillenium())
 #    i_scraps.append(p.ScrapTraderMade())
 #    i_scraps.append(p.ScrapTradingEconomics())
 #    i_scraps.append(p.ScrapBloomberg())
@@ -67,7 +68,11 @@ try:
             i_dftable_final = pd.concat(i_frames, ignore_index=True)
 
         # add pair id and join to eliminate 'unmonitored' pairs
+
         i_dftable_final = pd.merge(i_dftable_final, gv.G_PAIRS, on='pair', how='right')
+
+        if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_TEST_NODB, gv.G_CONST_MODE_TEST_DB]:
+            gv.G_LOGGER.info(i_dftable_final)
 
         # save to DB
         if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_PROD, gv.G_CONST_MODE_TEST_DB]:

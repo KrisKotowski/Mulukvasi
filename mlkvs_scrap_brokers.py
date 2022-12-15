@@ -7,29 +7,93 @@ from bs4 import BeautifulSoup
 import json
 
 
+class ScrapMillenium:
+    C_BROKER_ID = 7
+    C_BROKER_NAME = 'Millenium Bank'
+    C_URLS = [["https://www.bankmillennium.pl/portal-apps/getMainFxRates", "1"]]
+    C_PRICE_TYPE = 1
+
+    def __init__(self):
+        self.c_df_urls = pd.DataFrame(self.C_URLS, columns=['url', 'price_type'])
+
+    def read_single_file(self, a_url, a_rate_type):
+
+        gv.G_LOGGER.info('{0} start file download "{1}"'.format(self.C_BROKER_NAME, a_url))
+
+        i_start_time = time.time()
+        i_url_content = gv.G_URL.get_url_content(a_url)
+        i_end_time = time.time()
+
+        if i_url_content is None:
+            gv.G_LOGGER.error('{0} file download failed, timeout "{1}"'.format(self.C_BROKER_NAME, a_url))
+            return None
+        else:
+            if i_url_content.status_code != gv.G_URL.C_URL_SUCCESS:
+                gv.G_LOGGER.error('{0} file download failed, status code: {1} "{2}"'.format(self.C_BROKER_NAME,
+                                                                                            i_url_content.status_code,
+                                                                                            a_url))
+                return None
+            else:
+                gv.G_LOGGER.info('{0} done file download in {1} sec. "{2}"'.format(self.C_BROKER_NAME, '{:.2f}'.format(
+                    i_end_time - i_start_time), a_url))
+
+        i_json = json.loads(i_url_content.text)
+
+        i_indexes = [1, 2, 3, 4]
+        dftable = pd.DataFrame(columns=gv.G_OUTPUT_COLUMNS, index=i_indexes)
+
+        for x in range(1, 5):
+            dftable['pair'][x] = i_json["items"][x - 1]["currency"] + "PLN"
+            dftable['buy'][x] = int(i_json["items"][x - 1]["foreignExchangeBuy"] * 10000)
+            dftable['sell'][x] = int(i_json["items"][x - 1]["foreignExchangeSale"] * 10000)
+            dftable['broker'][x] = self.C_BROKER_ID
+            dftable['rate_type'][x] = a_rate_type
+
+        return dftable
+
+    def read_all_files(self):
+
+        i_threads = list()
+        i_dftable_final = pd.DataFrame()
+
+        for index, row in self.c_df_urls.iterrows():
+            x = s.ThreadWithReturnValue(target=self.read_single_file, args=(row['url'], row['price_type']))
+            if x is not None:
+                i_threads.append(x)
+                x.start()
+
+        for index, thread in enumerate(i_threads):
+            i_df_output = thread.join()
+            i_frames = [i_df_output, i_dftable_final]
+            i_dftable_final = pd.concat(i_frames, ignore_index=True)
+
+        return i_dftable_final
+
+
 class ScrapRevolut:
     C_BROKER_ID = 6
     C_BROKER_NAME = 'Revolut'
     C_URLS = [["https://www.revolut.com/api/exchange/quote/", "1"]]
-    #C_URLS = [["https://www.revolut.com/api/exchange/quote/?amount=100000&country=GB&fromCurrency=USD&isRecipientAmount=false&toCurrency=PLN", "1"]]
+    # C_URLS = [["https://www.revolut.com/api/exchange/quote/?amount=100000&country=GB&fromCurrency=USD&isRecipientAmount=false&toCurrency=PLN", "1"]]
     C_PRICE_TYPE = 1
     C_PAIR = 'USDPLN'
 
     C_COOKIES = {'cookieBannerNewClosed': 'true', 'isAnalyticsTargetingCookiesEnabled': 'false',
-        'rev_geo_country_code': 'PL', '_ga_NC0XSL7JGN': 'GS1.1.1670873196.1.0.1670873196.0.0.0',
-        '_ga': 'GA1.1.1568213650.1670873197', }
+                 'rev_geo_country_code': 'PL', '_ga_NC0XSL7JGN': 'GS1.1.1670873196.1.0.1670873196.0.0.0',
+                 '_ga': 'GA1.1.1568213650.1670873197', }
 
     C_HEADERS = {'authority': 'www.revolut.com',
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7', 'cache-control': 'max-age=0',
-        # 'cookie': 'cookieBannerNewClosed=true; isAnalyticsTargetingCookiesEnabled=false; rev_geo_country_code=PL; _ga_NC0XSL7JGN=GS1.1.1670873196.1.0.1670873196.0.0.0; _ga=GA1.1.1568213650.1670873197',
-        'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"', 'sec-ch-ua-mobile': '?0',
-        'sec-ch-ua-platform': '"Windows"', 'sec-fetch-dest': 'document', 'sec-fetch-mode': 'navigate',
-        'sec-fetch-site': 'none', 'sec-fetch-user': '?1', 'upgrade-insecure-requests': '1',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', }
+                 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                 'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7', 'cache-control': 'max-age=0',
+                 # 'cookie': 'cookieBannerNewClosed=true; isAnalyticsTargetingCookiesEnabled=false; rev_geo_country_code=PL; _ga_NC0XSL7JGN=GS1.1.1670873196.1.0.1670873196.0.0.0; _ga=GA1.1.1568213650.1670873197',
+                 'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
+                 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"', 'sec-fetch-dest': 'document',
+                 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'none', 'sec-fetch-user': '?1',
+                 'upgrade-insecure-requests': '1',
+                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', }
 
     C_PARAMS = {'amount': '100000', 'country': 'GB', 'fromCurrency': 'USD', 'isRecipientAmount': 'false',
-        'toCurrency': 'PLN', }
+                'toCurrency': 'PLN', }
 
     def __init__(self):
         self.c_df_urls = pd.DataFrame(self.C_URLS, columns=['url', 'price_type'])
@@ -60,9 +124,9 @@ class ScrapRevolut:
         dftable = pd.DataFrame(columns=gv.G_OUTPUT_COLUMNS, index=[1])
         dftable['pair'] = self.C_PAIR
         dftable['buy'] = int(i_json["rate"]["rate"] * 10000)
-        dftable['sell'] = 0
+        dftable['sell'] = int(i_json["rate"]["rate"] * 10000)
         dftable['broker'] = self.C_BROKER_ID
-        dftable['rate_type'] = self.C_PRICE_TYPE
+        dftable['rate_type'] = a_rate_type
 
         return dftable
 
@@ -154,7 +218,7 @@ class ScrapBloomberg:
         dftable['buy'] = ((dftable1[0]).astype(float) * 10000).apply(int)
         dftable['sell'] = 0
         dftable['broker'] = self.C_BROKER_ID
-        dftable['rate_type'] = self.C_PRICE_TYPE
+        dftable['rate_type'] = a_rate_type
 
         return dftable
 
@@ -224,7 +288,7 @@ class ScrapTradingEconomics:
         dftable['buy'] = ((dftable2[1]).astype(float) * 10000).apply(int)
         dftable['sell'] = 0
         dftable['broker'] = self.C_BROKER_ID
-        dftable['rate_type'] = self.C_PRICE_TYPE
+        dftable['rate_type'] = a_rate_type
 
         return dftable
 

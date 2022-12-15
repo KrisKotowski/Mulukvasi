@@ -4,7 +4,7 @@ import mlkvs_scrap_tools as s
 from bs4 import BeautifulSoup
 import json
 
-C_URL: str = 'https://www.revolut.com/api/exchange/quote/?amount=100000&country=GB&fromCurrency=USD&isRecipientAmount=false&toCurrency=PLN'
+C_URL: str = 'https://www.bankmillennium.pl/portal-apps/getMainFxRates'
 C_URL_SUCCESS = 200
 C_TIMEOUT = 1
 C_HEADERS = {
@@ -93,15 +93,28 @@ try:
         'toCurrency': 'PLN',
     }
 
-    i_url_content = requests.get('https://www.revolut.com/api/exchange/quote/', params=params, cookies=cookies,
-                            headers=headers)
+    # i_url_content = requests.get('https://www.revolut.com/api/exchange/quote/', params=params, cookies=cookies,
+    #                        headers=headers)
 
 
-    #i_url_content = requests.get(C_URL, headers=C_HEADERS, timeout=C_TIMEOUT)
+    i_url_content = requests.get(C_URL, headers=C_HEADERS, timeout=C_TIMEOUT)
     print(i_url_content.text)
     y = json.loads(i_url_content.text)
 
-    print(y["rate"]["rate"])
+    print(y["items"][0]["currency"])
+    print(y["items"][0]["foreignExchangeBuy"])
+    print(y["items"][0]["foreignExchangeSale"])
+
+    i_indexes = [1,2,3,4]
+    dftable = pd.DataFrame(columns=['pair', 'buy', 'sell', 'broker', 'rate_type'], index=i_indexes)
+    for x in range(1,5):
+        dftable['pair'][x] = y["items"][x-1]["currency"]+"PLN"
+        dftable['buy'][x] = int(y["items"][x - 1]["foreignExchangeBuy"]*10000)
+        dftable['sell'][x] = int(y["items"][x - 1]["foreignExchangeSale"] * 10000)
+        dftable['broker'][x] = 6
+        dftable['rate_type'][x] = 1
+    print(dftable)
+
     print('done downloading URL status code={0} "{1}"'.format(i_url_content.status_code, C_URL))
 except Exception as e:
     print('error downloading URL "{0}" {1}'.format(e, C_URL))
