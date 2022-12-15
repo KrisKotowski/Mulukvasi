@@ -2,10 +2,12 @@
 
 import mlkvs_scrap_brokers as p
 import mlkvs_scrap_tools as s
+import mlkvs_db_tools as db
 import pandas as pd
 import time
 import global_vars as gv
 import sys
+import importlib
 
 try:
     # initialize global vars
@@ -24,18 +26,22 @@ try:
     else:
         gv.init()
 
-    # initialize objects
+    # initialize scraper objects
     i_scraps = list()
-    i_scraps.append(p.ScrapCinkciarz())
-    i_scraps.append(p.ScrapIK())
-    i_scraps.append(p.ScrapRevolut1())
-    i_scraps.append(p.ScrapRevolut2())
-    i_scraps.append(p.ScrapMillenium())
-#    i_scraps.append(p.ScrapTraderMade())
-#    i_scraps.append(p.ScrapTradingEconomics())
-#    i_scraps.append(p.ScrapBloomberg())
+    i_module = importlib.import_module("mlkvs_scrap_brokers")
 
-    i_threads = list()
+    i_cursor = gv.G_DB.execute_sql(
+        'select broker_id, descr, class_name, api_key from public.broker where status=1::text', 0)
+    i_rows = i_cursor.fetchall()
+
+    for i_row in i_rows:
+        i_classname = i_row[2]
+        i_class = getattr(i_module, i_classname)
+        i_instance = i_class()
+        i_instance.C_BROKER_ID = i_row[0]
+        i_instance.C_BROKER_NAME = i_row[1]
+        i_instance.C_API_KEY = i_row[3]
+        i_scraps.append(i_instance)
 
     gv.G_LOGGER.info('PROGRAM START: initialization success in mode [{0}]'.format(gv.G_PROGRAM_MODE))
 except Exception as e:
@@ -44,6 +50,8 @@ except Exception as e:
     sys.exit()
 
 try:
+    i_threads = list()
+
     # start scraping
     gv.G_LOGGER.info('start scraping')
 

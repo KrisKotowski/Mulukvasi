@@ -12,7 +12,7 @@ class ScrapMillenium:
     C_BROKER_NAME = 'Millenium Bank'
     C_URLS = [["https://www.bankmillennium.pl/portal-apps/getMainFxRates", "1"]]
     C_PRICE_TYPE = 1
-
+    C_API_KEY = ''
     def __init__(self):
         self.c_df_urls = pd.DataFrame(self.C_URLS, columns=['url', 'price_type'])
 
@@ -71,7 +71,7 @@ class ScrapMillenium:
 
 
 class ScrapRevolut2:
-    C_BROKER_ID = 6
+    C_BROKER_ID = 8
     C_BROKER_NAME = 'Revolut2'
     C_URLS = [["https://www.revolut.com/api/exchange/quote/", "1"]]
     C_PRICE_TYPE = 1
@@ -93,7 +93,7 @@ class ScrapRevolut2:
 
     C_PARAMS = {'amount': '100000', 'country': 'GB', 'fromCurrency': 'EUR', 'isRecipientAmount': 'false',
                 'toCurrency': 'PLN', }
-
+    C_API_KEY = ''
     def __init__(self):
         self.c_df_urls = pd.DataFrame(self.C_URLS, columns=['url', 'price_type'])
 
@@ -171,6 +171,7 @@ class ScrapRevolut1:
     C_PARAMS = {'amount': '100000', 'country': 'GB', 'fromCurrency': 'USD', 'isRecipientAmount': 'false',
                 'toCurrency': 'PLN', }
 
+    C_API_KEY = ''
     def __init__(self):
         self.c_df_urls = pd.DataFrame(self.C_URLS, columns=['url', 'price_type'])
 
@@ -242,6 +243,7 @@ class ScrapBloomberg:
                  'upgrade-insecure-requests': '1',
                  'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', }
 
+    C_API_KEY = ''
     def __init__(self):
         self.c_df_urls = pd.DataFrame(self.C_URLS, columns=['url', 'price_type'])
 
@@ -324,6 +326,7 @@ class ScrapTradingEconomics:
               ["https://tradingeconomics.com/currencies?quote=eur", "1"]]
     C_PRICE_TYPE = 1
 
+    C_API_KEY = ''
     def __init__(self):
         self.c_df_urls = pd.DataFrame(self.C_URLS, columns=['url', 'price_type'])
 
@@ -392,9 +395,10 @@ class ScrapTraderMade:
     C_BROKER_NAME = 'Tradermade'
     C_API_KEY = 'DlZmo2SbGyCjzcXyaaPw'
     C_PRICE_TYPE = 1
-
+    C_URLS = [["", "1"]]
+    C_API_KEY = ''
     def __init__(self):
-        tm.set_rest_api_key("DlZmo2SbGyCjzcXyaaPw")
+        self.c_df_urls = pd.DataFrame(self.C_URLS, columns=['url', 'price_type'])
 
     def read_single_file(self):
 
@@ -443,6 +447,7 @@ class ScrapCinkciarz:
 
               ]
 
+    C_API_KEY = ''
     def __init__(self):
         self.c_df_urls = pd.DataFrame(self.C_URLS, columns=['url', 'price_type'])
 
@@ -518,6 +523,7 @@ class ScrapIK:
 
     C_URLS = [['https://klient.internetowykantor.pl/api/public/marketBrief', '1']]
 
+    C_API_KEY = ''
     def __init__(self):
         self.c_df_urls = pd.DataFrame(self.C_URLS, columns=['url', 'price_type'])
 
