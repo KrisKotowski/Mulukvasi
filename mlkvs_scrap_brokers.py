@@ -5,6 +5,7 @@ import global_vars as gv
 import tradermade as tm
 from bs4 import BeautifulSoup
 import json
+import requests
 
 
 class ScrapBroker:
@@ -65,21 +66,25 @@ class ScrapBroker:
             return None
 
 
-
 class ScrapeWise(ScrapBroker):
 
     def __init__(self):
         self.C_URLS = [["https://wise.com/rates/history?source=EUR&target=PLN&length=1&unit=day", "1"],
                        ["https://wise.com/rates/history?source=USD&target=PLN&length=1&unit=day", "1"],
-                       #["https://wise.com/rates/history?source=CHF&target=PLN&length=1&unit=day", "1"],
-                       #["https://wise.com/rates/history?source=GBP&target=PLN&length=1&unit=day", "1"]
+                       # ["https://wise.com/rates/history?source=CHF&target=PLN&length=1&unit=day", "1"],
+                       # ["https://wise.com/rates/history?source=GBP&target=PLN&length=1&unit=day", "1"]
                        ]
+
+        self.C_HEADERS = {}
+        self.C_COOKIES = {}
+        self.C_PARAMS = {}
 
         ScrapBroker.__init__(self)
 
     def read_single_file(self, a_url, a_rate_type):
 
-        i_url_content = ScrapBroker.read_single_file(self, a_url, a_rate_type, {}, {}, {})
+        i_url_content = ScrapBroker.read_single_file(self, a_url, a_rate_type, self.C_HEADERS, self.C_COOKIES,
+                                                     self.C_PARAMS)
 
         if i_url_content is None:
             return None
@@ -93,10 +98,11 @@ class ScrapeWise(ScrapBroker):
             dftable['pair'][x] = i_json[x - 1]["source"] + i_json[x - 1]["target"]
             dftable['buy'][x] = int(i_json[x - 1]["value"] * 10000)
             dftable['sell'][x] = int(i_json[x - 1]["value"] * 10000)
-            dftable['broker'][x] = 9
-            dftable['rate_type'][x] = 1
+            dftable['broker'][x] = self.C_BROKER_ID
+            dftable['rate_type'][x] = a_rate_type
 
         return dftable
+
 
 class ScrapMillenium(ScrapBroker):
 
@@ -126,33 +132,23 @@ class ScrapMillenium(ScrapBroker):
         return dftable
 
 
-class ScrapRevolutEUR(ScrapBroker):
+class ScrapeRevolut(ScrapBroker):
 
     def __init__(self):
-        self.C_URLS = [["https://www.revolut.com/api/exchange/quote/", "1"]]
+        self.C_URLS = [[
+            "https://www.revolut.com/api/exchange/quote/?amount=1&country=GB&fromCurrency=EUR&isRecipientAmount=false&toCurrency=PLN",
+            "1"], [
+            "https://www.revolut.com/api/exchange/quote/?amount=1&country=GB&fromCurrency=USD&isRecipientAmount=false&toCurrency=PLN",
+            "1"]]
 
-        self.C_PAIR = 'EURPLN'
-
-        self.C_COOKIES = {'cookieBannerNewClosed': 'true', 'isAnalyticsTargetingCookiesEnabled': 'false',
-                          'rev_geo_country_code': 'PL', '_ga_NC0XSL7JGN': 'GS1.1.1670873196.1.0.1670873196.0.0.0',
-                          '_ga': 'GA1.1.1568213650.1670873197', }
-
-        self.C_HEADERS = {'authority': 'www.revolut.com',
-                          'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                          'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7', 'cache-control': 'max-age=0',
-                          # 'cookie': 'cookieBannerNewClosed=true; isAnalyticsTargetingCookiesEnabled=false; rev_geo_country_code=PL; _ga_NC0XSL7JGN=GS1.1.1670873196.1.0.1670873196.0.0.0; _ga=GA1.1.1568213650.1670873197',
-                          'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
-                          'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"', 'sec-fetch-dest': 'document',
-                          'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'none', 'sec-fetch-user': '?1',
-                          'upgrade-insecure-requests': '1',
-                          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', }
-
-        self.C_PARAMS = {'amount': '100000', 'country': 'GB', 'fromCurrency': 'EUR', 'isRecipientAmount': 'false',
-                         'toCurrency': 'PLN', }
+        self.C_HEADERS = {'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7'}
+        self.C_COOKIES = {}
+        self.C_PARAMS = {}
 
         ScrapBroker.__init__(self)
 
     def read_single_file(self, a_url, a_rate_type):
+
         i_url_content = ScrapBroker.read_single_file(self, a_url, a_rate_type, self.C_HEADERS, self.C_COOKIES,
                                                      self.C_PARAMS)
 
@@ -161,57 +157,15 @@ class ScrapRevolutEUR(ScrapBroker):
 
         i_json = json.loads(i_url_content.text)
 
-        dftable = pd.DataFrame(columns=gv.G_OUTPUT_COLUMNS, index=[1])
-        dftable['pair'] = self.C_PAIR
-        dftable['buy'] = int(i_json["rate"]["rate"] * 10000)
-        dftable['sell'] = int(i_json["rate"]["rate"] * 10000)
-        dftable['broker'] = self.C_BROKER_ID
-        dftable['rate_type'] = a_rate_type
+        i_indexes = [1]
+        dftable = pd.DataFrame(columns=gv.G_OUTPUT_COLUMNS, index=i_indexes)
 
-        return dftable
-
-
-class ScrapRevolutUSD(ScrapBroker):
-
-    def __init__(self):
-        self.C_URLS = [["https://www.revolut.com/api/exchange/quote/", "1"]]
-
-        self.C_PAIR = 'USDPLN'
-
-        self.C_COOKIES = {'cookieBannerNewClosed': 'true', 'isAnalyticsTargetingCookiesEnabled': 'false',
-                          'rev_geo_country_code': 'PL', '_ga_NC0XSL7JGN': 'GS1.1.1670873196.1.0.1670873196.0.0.0',
-                          '_ga': 'GA1.1.1568213650.1670873197', }
-
-        self.C_HEADERS = {'authority': 'www.revolut.com',
-                          'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                          'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7', 'cache-control': 'max-age=0',
-                          # 'cookie': 'cookieBannerNewClosed=true; isAnalyticsTargetingCookiesEnabled=false; rev_geo_country_code=PL; _ga_NC0XSL7JGN=GS1.1.1670873196.1.0.1670873196.0.0.0; _ga=GA1.1.1568213650.1670873197',
-                          'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
-                          'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"', 'sec-fetch-dest': 'document',
-                          'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'none', 'sec-fetch-user': '?1',
-                          'upgrade-insecure-requests': '1',
-                          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', }
-
-        self.C_PARAMS = {'amount': '100000', 'country': 'GB', 'fromCurrency': 'USD', 'isRecipientAmount': 'false',
-                         'toCurrency': 'PLN', }
-
-        ScrapBroker.__init__(self)
-
-    def read_single_file(self, a_url, a_rate_type):
-        i_url_content = ScrapBroker.read_single_file(self, a_url, a_rate_type, self.C_HEADERS, self.C_COOKIES,
-                                                     self.C_PARAMS)
-
-        if i_url_content is None:
-            return None
-
-        i_json = json.loads(i_url_content.text)
-
-        dftable = pd.DataFrame(columns=gv.G_OUTPUT_COLUMNS, index=[1])
-        dftable['pair'] = self.C_PAIR
-        dftable['buy'] = int(i_json["rate"]["rate"] * 10000)
-        dftable['sell'] = int(i_json["rate"]["rate"] * 10000)
-        dftable['broker'] = self.C_BROKER_ID
-        dftable['rate_type'] = a_rate_type
+        for x in range(1, len(i_indexes) + 1):
+            dftable['pair'][x] = i_json["rate"]["from"] + i_json["rate"]["to"]
+            dftable['buy'][x] = int(i_json["rate"]["rate"] * 10000)
+            dftable['sell'][x] = int(i_json["rate"]["rate"] * 10000)
+            dftable['broker'][x] = self.C_BROKER_ID
+            dftable['rate_type'][x] = a_rate_type
 
         return dftable
 

@@ -116,12 +116,12 @@ try:
         'unit': 'day',
     }
 
-    i_url_content = requests.get('https://wise.com/rates/history?source=EUR&target=PLN&length=1&unit=day',
-                            headers={}, cookies={}, params={}, timeout=2)
+    i_url_content = requests.get('https://www.revolut.com/api/exchange/quote/?amount=1&country=GB&fromCurrency=EUR&isRecipientAmount=false&toCurrency=PLN',
+                            headers={'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7'}, cookies={}, params={}, timeout=2)
 
     i_json = json.loads(i_url_content.text)
-
-    print(i_json[0]["source"])
+    print(i_url_content.text)
+    print(i_json["rate"]["from"])
     i_indexes = [1]
     dftable = pd.DataFrame(columns=G_OUTPUT_COLUMNS, index=i_indexes)
 
