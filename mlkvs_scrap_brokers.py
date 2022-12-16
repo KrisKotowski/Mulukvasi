@@ -65,6 +65,39 @@ class ScrapBroker:
             return None
 
 
+
+class ScrapeWise(ScrapBroker):
+
+    def __init__(self):
+        self.C_URLS = [["https://wise.com/rates/history?source=EUR&target=PLN&length=1&unit=day", "1"],
+                       ["https://wise.com/rates/history?source=USD&target=PLN&length=1&unit=day", "1"],
+                       #["https://wise.com/rates/history?source=CHF&target=PLN&length=1&unit=day", "1"],
+                       #["https://wise.com/rates/history?source=GBP&target=PLN&length=1&unit=day", "1"]
+                       ]
+
+        ScrapBroker.__init__(self)
+
+    def read_single_file(self, a_url, a_rate_type):
+
+        i_url_content = ScrapBroker.read_single_file(self, a_url, a_rate_type, {}, {}, {})
+
+        if i_url_content is None:
+            return None
+
+        i_json = json.loads(i_url_content.text)
+
+        i_indexes = [1]
+        dftable = pd.DataFrame(columns=gv.G_OUTPUT_COLUMNS, index=i_indexes)
+
+        for x in range(1, len(i_indexes) + 1):
+            dftable['pair'][x] = i_json[x - 1]["source"] + i_json[x - 1]["target"]
+            dftable['buy'][x] = int(i_json[x - 1]["value"] * 10000)
+            dftable['sell'][x] = int(i_json[x - 1]["value"] * 10000)
+            dftable['broker'][x] = 9
+            dftable['rate_type'][x] = 1
+
+        return dftable
+
 class ScrapMillenium(ScrapBroker):
 
     def __init__(self):
