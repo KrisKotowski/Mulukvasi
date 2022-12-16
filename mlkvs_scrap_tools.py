@@ -39,6 +39,8 @@ def convert_html_to_table(table):
     for tr in trs:  # for every table row
         rows.append(row_get_data_text(tr, 'td'))  # data row
     return rows
+
+
 def convert_html_to_table2(table):
     """Parses a html segment started with tag <table> followed
     by multiple <tr> (table rows) and inner <td> (table data) tags.

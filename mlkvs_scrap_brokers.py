@@ -64,10 +64,11 @@ class ScrapBroker:
         else:
             return None
 
+
 class ScrapMillenium(ScrapBroker):
 
     def __init__(self):
-        ScrapBroker.C_URLS = [["https://www.bankmillennium.pl/portal-apps/getMainFxRates", "1"]]
+        self.C_URLS = [["https://www.bankmillennium.pl/portal-apps/getMainFxRates", "1"]]
         ScrapBroker.__init__(self)
 
     def read_single_file(self, a_url, a_rate_type):
@@ -92,30 +93,30 @@ class ScrapMillenium(ScrapBroker):
         return dftable
 
 
-class ScrapRevolut2(ScrapBroker):
+class ScrapRevolutEUR(ScrapBroker):
 
     def __init__(self):
-        ScrapBroker.C_URLS = [["https://www.revolut.com/api/exchange/quote/", "1"]]
+        self.C_URLS = [["https://www.revolut.com/api/exchange/quote/", "1"]]
 
-        ScrapBroker.C_PAIR = 'EURPLN'
+        self.C_PAIR = 'EURPLN'
 
-        ScrapBroker.C_COOKIES = {'cookieBannerNewClosed': 'true', 'isAnalyticsTargetingCookiesEnabled': 'false',
-                                 'rev_geo_country_code': 'PL',
-                                 '_ga_NC0XSL7JGN': 'GS1.1.1670873196.1.0.1670873196.0.0.0',
-                                 '_ga': 'GA1.1.1568213650.1670873197', }
+        self.C_COOKIES = {'cookieBannerNewClosed': 'true', 'isAnalyticsTargetingCookiesEnabled': 'false',
+                          'rev_geo_country_code': 'PL', '_ga_NC0XSL7JGN': 'GS1.1.1670873196.1.0.1670873196.0.0.0',
+                          '_ga': 'GA1.1.1568213650.1670873197', }
 
-        ScrapBroker.C_HEADERS = {'authority': 'www.revolut.com',
-                                 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                                 'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7', 'cache-control': 'max-age=0',
-                                 # 'cookie': 'cookieBannerNewClosed=true; isAnalyticsTargetingCookiesEnabled=false; rev_geo_country_code=PL; _ga_NC0XSL7JGN=GS1.1.1670873196.1.0.1670873196.0.0.0; _ga=GA1.1.1568213650.1670873197',
-                                 'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
-                                 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"',
-                                 'sec-fetch-dest': 'document', 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'none',
-                                 'sec-fetch-user': '?1', 'upgrade-insecure-requests': '1',
-                                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', }
+        self.C_HEADERS = {'authority': 'www.revolut.com',
+                          'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                          'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7', 'cache-control': 'max-age=0',
+                          # 'cookie': 'cookieBannerNewClosed=true; isAnalyticsTargetingCookiesEnabled=false; rev_geo_country_code=PL; _ga_NC0XSL7JGN=GS1.1.1670873196.1.0.1670873196.0.0.0; _ga=GA1.1.1568213650.1670873197',
+                          'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
+                          'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"', 'sec-fetch-dest': 'document',
+                          'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'none', 'sec-fetch-user': '?1',
+                          'upgrade-insecure-requests': '1',
+                          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', }
 
-        ScrapBroker.C_PARAMS = {'amount': '100000', 'country': 'GB', 'fromCurrency': 'EUR',
-                                'isRecipientAmount': 'false', 'toCurrency': 'PLN', }
+        self.C_PARAMS = {'amount': '100000', 'country': 'GB', 'fromCurrency': 'EUR', 'isRecipientAmount': 'false',
+                         'toCurrency': 'PLN', }
+
         ScrapBroker.__init__(self)
 
     def read_single_file(self, a_url, a_rate_type):
@@ -137,30 +138,29 @@ class ScrapRevolut2(ScrapBroker):
         return dftable
 
 
-class ScrapRevolut1(ScrapBroker):
+class ScrapRevolutUSD(ScrapBroker):
 
     def __init__(self):
-        ScrapBroker.C_URLS = [["https://www.revolut.com/api/exchange/quote/", "1"]]
+        self.C_URLS = [["https://www.revolut.com/api/exchange/quote/", "1"]]
 
-        ScrapBroker.C_PAIR = 'USDPLN'
+        self.C_PAIR = 'USDPLN'
 
-        ScrapBroker.C_COOKIES = {'cookieBannerNewClosed': 'true', 'isAnalyticsTargetingCookiesEnabled': 'false',
-                                 'rev_geo_country_code': 'PL',
-                                 '_ga_NC0XSL7JGN': 'GS1.1.1670873196.1.0.1670873196.0.0.0',
-                                 '_ga': 'GA1.1.1568213650.1670873197', }
+        self.C_COOKIES = {'cookieBannerNewClosed': 'true', 'isAnalyticsTargetingCookiesEnabled': 'false',
+                          'rev_geo_country_code': 'PL', '_ga_NC0XSL7JGN': 'GS1.1.1670873196.1.0.1670873196.0.0.0',
+                          '_ga': 'GA1.1.1568213650.1670873197', }
 
-        ScrapBroker.C_HEADERS = {'authority': 'www.revolut.com',
-                                 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                                 'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7', 'cache-control': 'max-age=0',
-                                 # 'cookie': 'cookieBannerNewClosed=true; isAnalyticsTargetingCookiesEnabled=false; rev_geo_country_code=PL; _ga_NC0XSL7JGN=GS1.1.1670873196.1.0.1670873196.0.0.0; _ga=GA1.1.1568213650.1670873197',
-                                 'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
-                                 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"',
-                                 'sec-fetch-dest': 'document', 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'none',
-                                 'sec-fetch-user': '?1', 'upgrade-insecure-requests': '1',
-                                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', }
+        self.C_HEADERS = {'authority': 'www.revolut.com',
+                          'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                          'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7', 'cache-control': 'max-age=0',
+                          # 'cookie': 'cookieBannerNewClosed=true; isAnalyticsTargetingCookiesEnabled=false; rev_geo_country_code=PL; _ga_NC0XSL7JGN=GS1.1.1670873196.1.0.1670873196.0.0.0; _ga=GA1.1.1568213650.1670873197',
+                          'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
+                          'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"', 'sec-fetch-dest': 'document',
+                          'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'none', 'sec-fetch-user': '?1',
+                          'upgrade-insecure-requests': '1',
+                          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', }
 
-        ScrapBroker.C_PARAMS = {'amount': '100000', 'country': 'GB', 'fromCurrency': 'USD',
-                                'isRecipientAmount': 'false', 'toCurrency': 'PLN', }
+        self.C_PARAMS = {'amount': '100000', 'country': 'GB', 'fromCurrency': 'USD', 'isRecipientAmount': 'false',
+                         'toCurrency': 'PLN', }
 
         ScrapBroker.__init__(self)
 
@@ -186,21 +186,19 @@ class ScrapRevolut1(ScrapBroker):
 class ScrapBloomberg(ScrapBroker):
 
     def __init__(self):
-        ScrapBroker.C_URLS = [["https://www.revolut.com/api/exchange/quote/", "1"]]
+        self.C_URLS = [["https://www.bloomberg.com/markets/currencies/europe-africa-middle-east", "1"]]
 
-        ScrapBroker.C_URLS = [["https://www.bloomberg.com/markets/currencies/europe-africa-middle-east", "1"]]
+        self.C_COOKIES = {'afUserId': 'a8e62d73-1dd2-4acd-9105-15afb187238d-p', }
 
-        ScrapBroker.C_COOKIES = {'afUserId': 'a8e62d73-1dd2-4acd-9105-15afb187238d-p', }
-
-        ScrapBroker.C_HEADERS = {'authority': 'www.bloomberg.com',
-                                 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                                 'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7', 'cache-control': 'max-age=0',
-                                 # 'cookie': 'afUserId=a8e62d73-1dd2-4acd-9105-15afb187238d-p',
-                                 'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
-                                 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"',
-                                 'sec-fetch-dest': 'document', 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'none',
-                                 'sec-fetch-user': '?1', 'upgrade-insecure-requests': '1',
-                                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', }
+        self.C_HEADERS = {'authority': 'www.bloomberg.com',
+                          'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                          'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7', 'cache-control': 'max-age=0',
+                          # 'cookie': 'afUserId=a8e62d73-1dd2-4acd-9105-15afb187238d-p',
+                          'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
+                          'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"', 'sec-fetch-dest': 'document',
+                          'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'none', 'sec-fetch-user': '?1',
+                          'upgrade-insecure-requests': '1',
+                          'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', }
 
         ScrapBroker.__init__(self)
 
@@ -246,8 +244,8 @@ class ScrapBloomberg(ScrapBroker):
 class ScrapTradingEconomics(ScrapBroker):
 
     def __init__(self):
-        ScrapBroker.C_URLS = [["https://tradingeconomics.com/currencies?quote=pln", "1"],
-                              ["https://tradingeconomics.com/currencies?quote=eur", "1"]]
+        self.C_URLS = [["https://tradingeconomics.com/currencies?quote=pln", "1"],
+                       ["https://tradingeconomics.com/currencies?quote=eur", "1"]]
 
         ScrapBroker.__init__(self)
 
@@ -281,7 +279,7 @@ class ScrapTradingEconomics(ScrapBroker):
 class ScrapTraderMade(ScrapBroker):
 
     def __init__(self):
-        ScrapBroker.C_API_KEY = 'DlZmo2SbGyCjzcXyaaPw'
+        # self.C_API_KEY = 'DlZmo2SbGyCjzcXyaaPw'
         ScrapBroker.__init__(self)
 
     def read_single_file(self):
@@ -319,21 +317,20 @@ class ScrapTraderMade(ScrapBroker):
 class ScrapCinkciarz(ScrapBroker):
 
     def __init__(self):
-        ScrapBroker.C_URLS = [["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=10", "1"],
-                              # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=50000", "2"],
-                              # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=EUR&unit=10", "unit price"],
-                              # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=EUR&unit=50000", "50K price"],
-                              # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=USD&unit=10", "unit price"],
-                              # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=USD&unit=50000", "50K price"],
-                              # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=GBP&unit=10", "unit price"],
-                              # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=GBP&unit=50000", "50K price"],
-                              # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=CHF&unit=10", "unit price"],
+        self.C_URLS = [["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=10", "1"],
+                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=50000", "2"],
+                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=EUR&unit=10", "unit price"],
+                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=EUR&unit=50000", "50K price"],
+                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=USD&unit=10", "unit price"],
+                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=USD&unit=50000", "50K price"],
+                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=GBP&unit=10", "unit price"],
+                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=GBP&unit=50000", "50K price"],
+                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=CHF&unit=10", "unit price"],
 
-                              ]
+                       ]
         ScrapBroker.__init__(self)
 
     def read_single_file(self, a_url, a_rate_type):
-
         def get_soup_table(a_html_in):
             i_soup = BeautifulSoup(a_html_in.text, "html.parser")
             i_htmltable = i_soup.find('table')
@@ -365,29 +362,11 @@ class ScrapCinkciarz(ScrapBroker):
 
         return dftable
 
-    def read_all_files(self):
-
-        i_threads = list()
-        i_dftable_final = pd.DataFrame()
-
-        for index, row in self.c_df_urls.iterrows():
-            x = s.ThreadWithReturnValue(target=self.read_single_file, args=(row['url'], row['price_type']))
-            if x is not None:
-                i_threads.append(x)
-                x.start()
-
-        for index, thread in enumerate(i_threads):
-            i_df_output = thread.join()
-            i_frames = [i_df_output, i_dftable_final]
-            i_dftable_final = pd.concat(i_frames, ignore_index=True)
-
-        return i_dftable_final
-
 
 class ScrapIK(ScrapBroker):
 
     def __init__(self):
-        ScrapBroker.C_URLS = [["https://klient.internetowykantor.pl/api/public/marketBrief", "1"]]
+        self.C_URLS = [["https://klient.internetowykantor.pl/api/public/marketBrief", "1"]]
         ScrapBroker.__init__(self)
 
     def read_single_file(self, a_url, a_rate_type):
