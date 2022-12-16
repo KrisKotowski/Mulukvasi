@@ -54,13 +54,15 @@ class ScrapBroker:
                 i_threads.append(x)
                 x.start()
 
-        for index, thread in enumerate(i_threads):
-            i_df_output = thread.join()
-            i_frames = [i_df_output, i_dftable_final]
-            i_dftable_final = pd.concat(i_frames, ignore_index=True)
+        if len(i_threads) > 0:
+            for index, thread in enumerate(i_threads):
+                i_df_output = thread.join()
+                i_frames = [i_df_output, i_dftable_final]
+                i_dftable_final = pd.concat(i_frames, ignore_index=True)
 
-        return i_dftable_final
-
+            return i_dftable_final
+        else:
+            return None
 
 class ScrapMillenium(ScrapBroker):
 
@@ -117,8 +119,8 @@ class ScrapRevolut2(ScrapBroker):
         ScrapBroker.__init__(self)
 
     def read_single_file(self, a_url, a_rate_type):
-
-        i_url_content = ScrapBroker.read_single_file(self, a_url, a_rate_type, self.C_HEADERS, self.C_COOKIES, self.C_PARAMS)
+        i_url_content = ScrapBroker.read_single_file(self, a_url, a_rate_type, self.C_HEADERS, self.C_COOKIES,
+                                                     self.C_PARAMS)
 
         if i_url_content is None:
             return None
@@ -163,7 +165,8 @@ class ScrapRevolut1(ScrapBroker):
         ScrapBroker.__init__(self)
 
     def read_single_file(self, a_url, a_rate_type):
-        i_url_content = ScrapBroker.read_single_file(self, a_url, a_rate_type, self.C_HEADERS, self.C_COOKIES, self.C_PARAMS)
+        i_url_content = ScrapBroker.read_single_file(self, a_url, a_rate_type, self.C_HEADERS, self.C_COOKIES,
+                                                     self.C_PARAMS)
 
         if i_url_content is None:
             return None
@@ -183,7 +186,6 @@ class ScrapRevolut1(ScrapBroker):
 class ScrapBloomberg(ScrapBroker):
 
     def __init__(self):
-
         ScrapBroker.C_URLS = [["https://www.revolut.com/api/exchange/quote/", "1"]]
 
         ScrapBroker.C_URLS = [["https://www.bloomberg.com/markets/currencies/europe-africa-middle-east", "1"]]
@@ -191,19 +193,18 @@ class ScrapBloomberg(ScrapBroker):
         ScrapBroker.C_COOKIES = {'afUserId': 'a8e62d73-1dd2-4acd-9105-15afb187238d-p', }
 
         ScrapBroker.C_HEADERS = {'authority': 'www.bloomberg.com',
-                     'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                     'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7', 'cache-control': 'max-age=0',
-                     # 'cookie': 'afUserId=a8e62d73-1dd2-4acd-9105-15afb187238d-p',
-                     'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
-                     'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"', 'sec-fetch-dest': 'document',
-                     'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'none', 'sec-fetch-user': '?1',
-                     'upgrade-insecure-requests': '1',
-                     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', }
+                                 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                                 'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7', 'cache-control': 'max-age=0',
+                                 # 'cookie': 'afUserId=a8e62d73-1dd2-4acd-9105-15afb187238d-p',
+                                 'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
+                                 'sec-ch-ua-mobile': '?0', 'sec-ch-ua-platform': '"Windows"',
+                                 'sec-fetch-dest': 'document', 'sec-fetch-mode': 'navigate', 'sec-fetch-site': 'none',
+                                 'sec-fetch-user': '?1', 'upgrade-insecure-requests': '1',
+                                 'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', }
 
         ScrapBroker.__init__(self)
 
     def read_single_file(self, a_url, a_rate_type):
-
         def get_soup_table(a_html_in):
             i_soup = BeautifulSoup(a_html_in.text, "html.parser")
             i_htmltable = i_soup.find('table')
@@ -241,18 +242,16 @@ class ScrapBloomberg(ScrapBroker):
 
         return dftable
 
+
 class ScrapTradingEconomics(ScrapBroker):
 
     def __init__(self):
-
         ScrapBroker.C_URLS = [["https://tradingeconomics.com/currencies?quote=pln", "1"],
-                  ["https://tradingeconomics.com/currencies?quote=eur", "1"]]
+                              ["https://tradingeconomics.com/currencies?quote=eur", "1"]]
 
         ScrapBroker.__init__(self)
 
-
     def read_single_file(self, a_url, a_rate_type):
-
         def get_soup_table(a_html_in):
             i_soup = BeautifulSoup(a_html_in.text, "html.parser")
             i_htmltable = i_soup.find('table')
@@ -277,6 +276,7 @@ class ScrapTradingEconomics(ScrapBroker):
         dftable['rate_type'] = a_rate_type
 
         return dftable
+
 
 class ScrapTraderMade(ScrapBroker):
 

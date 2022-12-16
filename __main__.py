@@ -1,8 +1,6 @@
 # main project file
 
-import mlkvs_scrap_brokers as p
 import mlkvs_scrap_tools as s
-import mlkvs_db_tools as db
 import pandas as pd
 import time
 import global_vars as gv
@@ -43,8 +41,12 @@ try:
         i_instance.C_API_KEY = i_row[3]
         i_scraps.append(i_instance)
 
+    if len(i_scraps) == 0:
+        raise Exception('no active brokers to scrap')
+
     #sys.exit()
     gv.G_LOGGER.info('PROGRAM START: initialization success in mode [{0}]'.format(gv.G_PROGRAM_MODE))
+
 except Exception as e:
     gv.G_LOGGER.error('initialization failed "{0}"'.format(e), exc_info=True)
     gv.G_LOGGER.error('program halted')
@@ -68,26 +70,27 @@ try:
         # multithread function call
         for i_object in i_scraps:
             i_thread_scrap = s.ThreadWithReturnValue(target=i_object.read_all_files)
-            i_threads.append(i_thread_scrap)
-            i_thread_scrap.start()
+            if i_thread_scrap is not None:
+                i_threads.append(i_thread_scrap)
+                i_thread_scrap.start()
 
         # multithread function join
-        for index, thread in enumerate(i_threads):
-            i_df_output = thread.join()
-            i_frames = [i_df_output, i_dftable_final]
-            i_dftable_final = pd.concat(i_frames, ignore_index=True)
+        if len(i_threads) > 0:
+            for index, thread in enumerate(i_threads):
+                i_df_output = thread.join()
+                i_frames = [i_df_output, i_dftable_final]
+                i_dftable_final = pd.concat(i_frames, ignore_index=True)
 
-        # add pair id and join to eliminate 'unmonitored' pairs
+            # add pair id and join to eliminate 'unmonitored' pairs
+            i_dftable_final = pd.merge(i_dftable_final, gv.G_PAIRS, on='pair', how='right')
 
-        i_dftable_final = pd.merge(i_dftable_final, gv.G_PAIRS, on='pair', how='right')
+            if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_TEST_NODB, gv.G_CONST_MODE_TEST_DB]:
+                print(i_dftable_final)
 
-        if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_TEST_NODB, gv.G_CONST_MODE_TEST_DB]:
-            print(i_dftable_final)
-
-        # save to DB
-        if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_PROD, gv.G_CONST_MODE_TEST_DB]:
-            i_thread_DB = s.ThreadWithReturnValue(target=gv.G_DB.save_hist_db(i_dftable_final))
-            i_thread_DB.start()
+            # save to DB
+            if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_PROD, gv.G_CONST_MODE_TEST_DB]:
+                i_thread_DB = s.ThreadWithReturnValue(target=gv.G_DB.save_hist_db(i_dftable_final))
+                i_thread_DB.start()
 
         gv.G_LOGGER.info('done step {0}...'.format(i_step))
 
@@ -96,6 +99,7 @@ try:
             time.sleep(gv.G_DELAY_SECONDS)
             if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_PROD, gv.G_CONST_MODE_TEST_DB]:
                 i_thread_DB.join()
+
     gv.G_LOGGER.info('done scraping')
 
 except Exception as e:
