@@ -69,11 +69,9 @@ class ScrapBroker:
 class ScrapeWise(ScrapBroker):
 
     def __init__(self):
-        self.C_URLS = [["https://wise.com/rates/history?source=EUR&target=PLN&length=1&unit=day", "1"],
-                       ["https://wise.com/rates/history?source=USD&target=PLN&length=1&unit=day", "1"],
-                       # ["https://wise.com/rates/history?source=CHF&target=PLN&length=1&unit=day", "1"],
-                       # ["https://wise.com/rates/history?source=GBP&target=PLN&length=1&unit=day", "1"]
-                       ]
+        self.C_URLS = [
+            ["https://wise.com/gateway/v3/price?sourceAmount=100000&sourceCurrency=PLN&targetCurrency=EUR", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=100000&sourceCurrency=PLN&targetCurrency=USD", "1"], ]
 
         self.C_HEADERS = {}
         self.C_COOKIES = {}
@@ -94,10 +92,13 @@ class ScrapeWise(ScrapBroker):
         i_indexes = [1]
         dftable = pd.DataFrame(columns=gv.G_OUTPUT_COLUMNS, index=i_indexes)
 
+        i_json_df = s.get_json_table(i_json)
+        i_json_df = i_json_df.sort_values(by='targetAmount', ascending=False)
+
         for x in range(1, len(i_indexes) + 1):
-            dftable['pair'][x] = i_json[x - 1]["source"] + i_json[x - 1]["target"]
-            dftable['buy'][x] = int(i_json[x - 1]["value"] * 10000)
-            dftable['sell'][x] = int(i_json[x - 1]["value"] * 10000)
+            dftable['pair'][x] = i_json_df['targetCcy'][1] + i_json_df["sourceCcy"][1]
+            dftable['buy'][x] = int((i_json_df['sourceAmount'][1] / i_json_df['targetAmount'][1]) * 10000)
+            dftable['sell'][x] = int((i_json_df['sourceAmount'][1] / i_json_df['targetAmount'][1]) * 10000)
             dftable['broker'][x] = self.C_BROKER_ID
             dftable['rate_type'][x] = a_rate_type
 

@@ -3,6 +3,7 @@ import pandas as pd
 import mlkvs_scrap_tools as s
 from bs4 import BeautifulSoup
 import json
+import sys
 
 C_URL: str = 'https://www.bankmillennium.pl/portal-apps/getMainFxRates'
 C_URL_SUCCESS = 200
@@ -116,11 +117,16 @@ try:
         'unit': 'day',
     }
 
-    i_url_content = requests.get('https://www.revolut.com/api/exchange/quote/?amount=1&country=GB&fromCurrency=EUR&isRecipientAmount=false&toCurrency=PLN',
+    i_url_content = requests.get('https://wise.com/gateway/v3/price?sourceAmount=100000&sourceCurrency=GBP&targetCurrency=USD',
                             headers={'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7'}, cookies={}, params={}, timeout=2)
 
     i_json = json.loads(i_url_content.text)
-    print(i_url_content.text)
+    a = s.get_json_table(i_json)
+    a = a.sort_values(by='targetAmount', ascending=False)
+    #a['rate'] = a['sourceAmount'] / a['targetAmount']
+    a_rate = a['sourceAmount'][1] / a['targetAmount'][1]
+    print(a_rate)
+    sys.exit()
     print(i_json["rate"]["from"])
     i_indexes = [1]
     dftable = pd.DataFrame(columns=G_OUTPUT_COLUMNS, index=i_indexes)

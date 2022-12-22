@@ -32,6 +32,9 @@ try:
         'select broker_id, descr, class_name, api_key from public.broker where status=1::text', 0)
     i_rows = i_cursor.fetchall()
 
+    if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_TEST_NODB, gv.G_CONST_MODE_TEST_DB]:
+        i_dftable_brokers = pd.DataFrame(columns=['broker','broker_descr'], index=i_rows)
+
     for i_row in i_rows:
         i_classname = i_row[2]
         i_class = getattr(i_module, i_classname)
@@ -40,11 +43,13 @@ try:
         i_instance.C_BROKER_NAME = i_row[1]
         i_instance.C_API_KEY = i_row[3]
         i_scraps.append(i_instance)
+        if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_TEST_NODB, gv.G_CONST_MODE_TEST_DB]:
+            i_dftable_brokers['broker'][i_row] = i_row[0]
+            i_dftable_brokers['broker_descr'][i_row] = i_row[1]
 
     if len(i_scraps) == 0:
         raise Exception('no active brokers to scrap')
 
-    #sys.exit()
     gv.G_LOGGER.info('PROGRAM START: initialization success in mode [{0}]'.format(gv.G_PROGRAM_MODE))
 
 except Exception as e:
@@ -85,7 +90,7 @@ try:
             i_dftable_final = pd.merge(i_dftable_final, gv.G_PAIRS, on='pair', how='right')
 
             if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_TEST_NODB, gv.G_CONST_MODE_TEST_DB]:
-                print(i_dftable_final)
+                print(pd.merge(i_dftable_final, i_dftable_brokers, how='inner', on='broker'))
 
             # save to DB
             if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_PROD, gv.G_CONST_MODE_TEST_DB]:
