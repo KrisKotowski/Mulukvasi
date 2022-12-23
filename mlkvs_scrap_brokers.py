@@ -100,7 +100,7 @@ class ScrapeWise(ScrapBroker):
         i_json_df = i_json_df.sort_values(by='targetAmount', ascending=False)
 
         for x in range(1, len(i_indexes) + 1):
-            dftable['pair'][x] = i_json_df["sourceCcy"][1] + i_json_df['targetCcy'][1]
+            dftable['pair'][x] =  i_json_df["sourceCcy"][1] + i_json_df['targetCcy'][1]
             dftable['buy'][x] = int((i_json_df['sourceAmount'][1] / i_json_df['targetAmount'][1]) * 10000)
             dftable['sell'][x] = int((i_json_df['sourceAmount'][1] / i_json_df['targetAmount'][1]) * 10000)
             dftable['broker'][x] = self.C_BROKER_ID
