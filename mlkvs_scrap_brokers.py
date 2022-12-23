@@ -70,8 +70,12 @@ class ScrapeWise(ScrapBroker):
 
     def __init__(self):
         self.C_URLS = [
-            ["https://wise.com/gateway/v3/price?sourceAmount=100000&sourceCurrency=PLN&targetCurrency=EUR", "1"],
-            ["https://wise.com/gateway/v3/price?sourceAmount=100000&sourceCurrency=PLN&targetCurrency=USD", "1"], ]
+            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=PLN&targetCurrency=EUR", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=PLN&targetCurrency=USD", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=EUR&targetCurrency=PLN", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=USD&targetCurrency=PLN", "1"],
+
+        ]
 
         self.C_HEADERS = {}
         self.C_COOKIES = {}
@@ -96,7 +100,7 @@ class ScrapeWise(ScrapBroker):
         i_json_df = i_json_df.sort_values(by='targetAmount', ascending=False)
 
         for x in range(1, len(i_indexes) + 1):
-            dftable['pair'][x] = i_json_df['targetCcy'][1] + i_json_df["sourceCcy"][1]
+            dftable['pair'][x] = i_json_df["sourceCcy"][1] + i_json_df['targetCcy'][1]
             dftable['buy'][x] = int((i_json_df['sourceAmount'][1] / i_json_df['targetAmount'][1]) * 10000)
             dftable['sell'][x] = int((i_json_df['sourceAmount'][1] / i_json_df['targetAmount'][1]) * 10000)
             dftable['broker'][x] = self.C_BROKER_ID
@@ -130,17 +134,25 @@ class ScrapMillenium(ScrapBroker):
             dftable['broker'][x] = self.C_BROKER_ID
             dftable['rate_type'][x] = a_rate_type
 
-        return dftable
+        # reverse
+        dftable2 = dftable.copy()
+
+        dftable2['pair'] = dftable2['pair'].str.slice(3, 6) + dftable2['pair'].str.slice(0, 3)
+        dftable2['buy'] = ((1/(dftable2['buy']/10000)) * 10000).apply(int)
+        dftable2['sell'] = ((1/(dftable2['sell']/10000)) * 10000).apply(int)
+
+        return pd.concat([dftable, dftable2])
 
 
 class ScrapeRevolut(ScrapBroker):
 
     def __init__(self):
-        self.C_URLS = [[
-            "https://www.revolut.com/api/exchange/quote/?amount=1&country=GB&fromCurrency=EUR&isRecipientAmount=false&toCurrency=PLN",
-            "1"], [
-            "https://www.revolut.com/api/exchange/quote/?amount=1&country=GB&fromCurrency=USD&isRecipientAmount=false&toCurrency=PLN",
-            "1"]]
+        self.C_URLS = [
+            ["https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=EUR&isRecipientAmount=false&toCurrency=PLN","1"],
+            ["https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=USD&isRecipientAmount=false&toCurrency=PLN", "1"],
+            ["https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=USD", "1"],
+            ["https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=EUR", "1"]
+        ]
 
         self.C_HEADERS = {'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7'}
         self.C_COOKIES = {}
@@ -226,8 +238,14 @@ class ScrapBloomberg(ScrapBroker):
         dftable['broker'] = self.C_BROKER_ID
         dftable['rate_type'] = a_rate_type
 
-        return dftable
+        # reverse
+        dftable2 = dftable.copy()
 
+        dftable2['pair'] = dftable2['pair'].str.slice(3, 6) + dftable2['pair'].str.slice(0, 3)
+        dftable2['buy'] = ((1/(dftable2['buy']/10000)) * 10000).apply(int)
+        dftable2['sell'] = ((1/(dftable2['sell']/10000)) * 10000).apply(int)
+
+        return pd.concat([dftable, dftable2])
 
 class ScrapTradingEconomics(ScrapBroker):
 
@@ -261,7 +279,14 @@ class ScrapTradingEconomics(ScrapBroker):
         dftable['broker'] = self.C_BROKER_ID
         dftable['rate_type'] = a_rate_type
 
-        return dftable
+        # reverse
+        dftable2 = dftable.copy()
+
+        dftable2['pair'] = dftable2['pair'].str.slice(3, 6) + dftable2['pair'].str.slice(0, 3)
+        dftable2['buy'] = ((1/(dftable2['buy']/10000)) * 10000).apply(int)
+        dftable2['sell'] = ((1/(dftable2['sell']/10000)) * 10000).apply(int)
+
+        return pd.concat([dftable, dftable2])
 
 
 class ScrapTraderMade(ScrapBroker):
@@ -295,7 +320,14 @@ class ScrapTraderMade(ScrapBroker):
         dftable.drop('bid', axis=1, inplace=True)
         dftable.drop('ask', axis=1, inplace=True)
 
-        return dftable
+        # reverse
+        dftable2 = dftable.copy()
+
+        dftable2['pair'] = dftable2['pair'].str.slice(3, 6) + dftable2['pair'].str.slice(0, 3)
+        dftable2['buy'] = ((1/(dftable2['buy']/10000)) * 10000).apply(int)
+        dftable2['sell'] = ((1/(dftable2['sell']/10000)) * 10000).apply(int)
+
+        return pd.concat([dftable, dftable2])
 
     def read_all_files(self):
         i_dftable_final = self.read_single_file()
@@ -348,7 +380,14 @@ class ScrapCinkciarz(ScrapBroker):
         dftable.drop('scan_id', axis=1, inplace=True)
         dftable.drop('qty', axis=1, inplace=True)
 
-        return dftable
+        # reverse
+        dftable2 = dftable.copy()
+
+        dftable2['pair'] = dftable2['pair'].str.slice(3, 6) + dftable2['pair'].str.slice(0, 3)
+        dftable2['buy'] = ((1/(dftable2['buy']/10000)) * 10000).apply(int)
+        dftable2['sell'] = ((1/(dftable2['sell']/10000)) * 10000).apply(int)
+
+        return pd.concat([dftable, dftable2])
 
 
 class ScrapIK(ScrapBroker):
@@ -382,4 +421,11 @@ class ScrapIK(ScrapBroker):
         dftable.drop('scan_id', axis=1, inplace=True)
         dftable.drop('qty', axis=1, inplace=True)
 
-        return dftable
+        # reverse
+        dftable2 = dftable.copy()
+
+        dftable2['pair'] = dftable2['pair'].str.slice(3, 6) + dftable2['pair'].str.slice(0, 3)
+        dftable2['buy'] = ((1/(dftable2['buy']/10000)) * 10000).apply(int)
+        dftable2['sell'] = ((1/(dftable2['sell']/10000)) * 10000).apply(int)
+
+        return pd.concat([dftable, dftable2])
