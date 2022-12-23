@@ -74,8 +74,12 @@ class ScrapeWise(ScrapBroker):
             ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=PLN&targetCurrency=USD", "1"],
             ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=EUR&targetCurrency=PLN", "1"],
             ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=USD&targetCurrency=PLN", "1"],
-
-        ]
+            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=PLN&targetCurrency=GBP", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=PLN&targetCurrency=CHF", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=GBP&targetCurrency=PLN", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=CHF&targetCurrency=PLN", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=PLN&targetCurrency=NOK", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=NOK&targetCurrency=PLN", "1"], ]
 
         self.C_HEADERS = {}
         self.C_COOKIES = {}
@@ -155,6 +159,18 @@ class ScrapeRevolut(ScrapBroker):
             "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=USD",
             "1"], [
             "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=EUR",
+            "1"], [
+            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=GBP&isRecipientAmount=false&toCurrency=PLN",
+            "1"], [
+            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=CHF&isRecipientAmount=false&toCurrency=PLN",
+            "1"], [
+            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=GBP",
+            "1"], [
+            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=CHF",
+            "1"], [
+            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=NOK&isRecipientAmount=false&toCurrency=PLN",
+            "1"], [
+            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=NOK",
             "1"]]
 
         self.C_HEADERS = {'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7'}

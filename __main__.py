@@ -113,4 +113,4 @@ except Exception as e:
     sys.exit()
 
 # program end
-gv.G_LOGGER.info('PROGRAM END')
+gv.G_LOGGER.critical('PROGRAM END')
