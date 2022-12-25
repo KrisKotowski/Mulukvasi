@@ -394,7 +394,7 @@ class ScrapCinkciarz(ScrapBroker):
             # sell
             dftable['pair'][x + 8] = i_json["currenciesRate"][x-1]["currenciesPair"]["to"] + i_json["currenciesRate"][x-1]["currenciesPair"]["from"]
             dftable['sell'][x + 8] = i_json["numberOfUnits"]
-            dftable['buy'][x + 8] = int(float(i_json["currenciesRate"][x-1]["buy"]["rate"]) * i_json["numberOfUnits"])
+            dftable['buy'][x + 8] = int(float((1/i_json["currenciesRate"][x-1]["buy"]["rate"])) * i_json["numberOfUnits"])
             dftable['broker'][x + 8] = self.C_BROKER_ID
             dftable['rate_type'][x + 8] = a_rate_type
 
