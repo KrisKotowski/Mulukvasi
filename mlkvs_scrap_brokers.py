@@ -70,16 +70,16 @@ class ScrapeWise(ScrapBroker):
 
     def __init__(self):
         self.C_URLS = [
-            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=PLN&targetCurrency=EUR", "1"],
-            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=PLN&targetCurrency=USD", "1"],
-            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=EUR&targetCurrency=PLN", "1"],
-            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=USD&targetCurrency=PLN", "1"],
-            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=PLN&targetCurrency=GBP", "1"],
-            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=PLN&targetCurrency=CHF", "1"],
-            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=GBP&targetCurrency=PLN", "1"],
-            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=CHF&targetCurrency=PLN", "1"],
-            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=PLN&targetCurrency=NOK", "1"],
-            ["https://wise.com/gateway/v3/price?sourceAmount=1000&sourceCurrency=NOK&targetCurrency=PLN", "1"], ]
+            ["https://wise.com/gateway/v3/price?sourceAmount=50000&sourceCurrency=PLN&targetCurrency=EUR", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=50000&sourceCurrency=PLN&targetCurrency=USD", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=50000&sourceCurrency=EUR&targetCurrency=PLN", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=50000&sourceCurrency=USD&targetCurrency=PLN", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=50000&sourceCurrency=PLN&targetCurrency=GBP", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=50000&sourceCurrency=PLN&targetCurrency=CHF", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=50000&sourceCurrency=GBP&targetCurrency=PLN", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=50000&sourceCurrency=CHF&targetCurrency=PLN", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=50000&sourceCurrency=PLN&targetCurrency=NOK", "1"],
+            ["https://wise.com/gateway/v3/price?sourceAmount=50000&sourceCurrency=NOK&targetCurrency=PLN", "1"], ]
 
         self.C_HEADERS = {}
         self.C_COOKIES = {}
@@ -104,9 +104,9 @@ class ScrapeWise(ScrapBroker):
         i_json_df = i_json_df.sort_values(by='targetAmount', ascending=False)
 
         for x in range(1, len(i_indexes) + 1):
-            dftable['pair'][x] = i_json_df['targetCcy'][1] + i_json_df["sourceCcy"][1]
-            dftable['buy'][x] = int((i_json_df['sourceAmount'][1] / i_json_df['targetAmount'][1]) * 10000)
-            dftable['sell'][x] = int((i_json_df['sourceAmount'][1] / i_json_df['targetAmount'][1]) * 10000)
+            dftable['pair'][x] = i_json_df["sourceCcy"][1] + i_json_df['targetCcy'][1]
+            dftable['sell'][x] = int(i_json_df['sourceAmount'][1])
+            dftable['buy'][x] = int(i_json_df['targetAmount'][1])
             dftable['broker'][x] = self.C_BROKER_ID
             dftable['rate_type'][x] = a_rate_type
 
@@ -142,8 +142,8 @@ class ScrapMillenium(ScrapBroker):
         dftable2 = dftable.copy()
 
         dftable2['pair'] = dftable2['pair'].str.slice(3, 6) + dftable2['pair'].str.slice(0, 3)
-        dftable2['buy'] = ((1 / (dftable2['buy'] / 10000)) * 10000).apply(int)
-        dftable2['sell'] = ((1 / (dftable2['sell'] / 10000)) * 10000).apply(int)
+        dftable2['buy'] = ((1 / (dftable2['sell'] / 10000)) * 10000).apply(int)
+        dftable2['sell'] = ((1 / (dftable2['buy'] / 10000)) * 10000).apply(int)
 
         return pd.concat([dftable, dftable2])
 
@@ -152,25 +152,25 @@ class ScrapeRevolut(ScrapBroker):
 
     def __init__(self):
         self.C_URLS = [[
-            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=EUR&isRecipientAmount=false&toCurrency=PLN",
+            "https://www.revolut.com/api/exchange/quote/?amount=50000&country=GB&fromCurrency=EUR&isRecipientAmount=false&toCurrency=PLN",
             "1"], [
-            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=USD&isRecipientAmount=false&toCurrency=PLN",
+            "https://www.revolut.com/api/exchange/quote/?amount=50000&country=GB&fromCurrency=USD&isRecipientAmount=false&toCurrency=PLN",
             "1"], [
-            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=USD",
+            "https://www.revolut.com/api/exchange/quote/?amount=50000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=USD",
             "1"], [
-            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=EUR",
+            "https://www.revolut.com/api/exchange/quote/?amount=50000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=EUR",
             "1"], [
-            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=GBP&isRecipientAmount=false&toCurrency=PLN",
+            "https://www.revolut.com/api/exchange/quote/?amount=50000&country=GB&fromCurrency=GBP&isRecipientAmount=false&toCurrency=PLN",
             "1"], [
-            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=CHF&isRecipientAmount=false&toCurrency=PLN",
+            "https://www.revolut.com/api/exchange/quote/?amount=50000&country=GB&fromCurrency=CHF&isRecipientAmount=false&toCurrency=PLN",
             "1"], [
-            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=GBP",
+            "https://www.revolut.com/api/exchange/quote/?amount=50000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=GBP",
             "1"], [
-            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=CHF",
+            "https://www.revolut.com/api/exchange/quote/?amount=50000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=CHF",
             "1"], [
-            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=NOK&isRecipientAmount=false&toCurrency=PLN",
+            "https://www.revolut.com/api/exchange/quote/?amount=50000&country=GB&fromCurrency=NOK&isRecipientAmount=false&toCurrency=PLN",
             "1"], [
-            "https://www.revolut.com/api/exchange/quote/?amount=1000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=NOK",
+            "https://www.revolut.com/api/exchange/quote/?amount=50000&country=GB&fromCurrency=PLN&isRecipientAmount=false&toCurrency=NOK",
             "1"]]
 
         self.C_HEADERS = {'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7'}
@@ -193,9 +193,9 @@ class ScrapeRevolut(ScrapBroker):
         dftable = pd.DataFrame(columns=gv.G_OUTPUT_COLUMNS, index=i_indexes)
 
         for x in range(1, len(i_indexes) + 1):
-            dftable['pair'][x] = i_json["rate"]["from"] + i_json["rate"]["to"]
-            dftable['buy'][x] = int(i_json["rate"]["rate"] * 10000)
-            dftable['sell'][x] = int(i_json["rate"]["rate"] * 10000)
+            dftable['pair'][x] = i_json["sender"]["currency"] + i_json["recipient"]["currency"]
+            dftable['sell'][x] = int(i_json["sender"]["amount"])
+            dftable['buy'][x] = int(i_json["recipient"]["amount"])
             dftable['broker'][x] = self.C_BROKER_ID
             dftable['rate_type'][x] = a_rate_type
 
@@ -357,17 +357,8 @@ class ScrapTraderMade(ScrapBroker):
 class ScrapCinkciarz(ScrapBroker):
 
     def __init__(self):
-        self.C_URLS = [["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=10", "1"],
-                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=PLN&unit=50000", "2"],
-                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=EUR&unit=10", "unit price"],
-                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=EUR&unit=50000", "50K price"],
-                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=USD&unit=10", "unit price"],
-                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=USD&unit=50000", "50K price"],
-                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=GBP&unit=10", "unit price"],
-                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=GBP&unit=50000", "50K price"],
-                       # ["https://cinkciarz.pl/wa/pe/transactional?subscriptionId=CHF&unit=10", "unit price"],
+        self.C_URLS = [["https://cinkciarz.pl/wa/home-rates", "1"]]
 
-                       ]
         ScrapBroker.__init__(self)
 
     def read_single_file(self, a_url, a_rate_type):
@@ -384,36 +375,45 @@ class ScrapCinkciarz(ScrapBroker):
         if i_url_content is None:
             return None
 
-        # html to table
-        dftable = get_soup_table(i_url_content)
-        dftable = dftable.drop([0])
-        dftable[1] = 1
-        dftable[5] = 1
-        dftable[6] = self.C_BROKER_ID
-        dftable[7] = a_rate_type
-        dftable = dftable[[5, 6, 0, 7, 1, 3, 4]]
-        dftable = dftable.rename({0: 'pair', 1: 'qty', 3: 'buy', 4: 'sell', 5: 'scan_id', 6: 'broker', 7: 'rate_type'},
-                                 axis=1)
-        dftable['buy'] = ((dftable['buy'].str.replace(',', '.')).astype(float) * 10000).apply(int)
-        dftable['sell'] = ((dftable['sell'].str.replace(',', '.')).astype(float) * 10000).apply(int)
+        i_json = json.loads(i_url_content.text)
 
-        dftable.drop('scan_id', axis=1, inplace=True)
-        dftable.drop('qty', axis=1, inplace=True)
+        i_indexes = [1,2,3,4,5,6,7,8]
+        i_indexes2 = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
 
-        # reverse
-        dftable2 = dftable.copy()
+        dftable = pd.DataFrame(columns=gv.G_OUTPUT_COLUMNS, index=i_indexes2)
 
-        dftable2['pair'] = dftable2['pair'].str.slice(3, 6) + dftable2['pair'].str.slice(0, 3)
-        dftable2['buy'] = ((1 / (dftable2['buy'] / 10000)) * 10000).apply(int)
-        dftable2['sell'] = ((1 / (dftable2['sell'] / 10000)) * 10000).apply(int)
+        for x in range(1, len(i_indexes) + 1):
+            # buy
+            dftable['pair'][x] = i_json["currenciesRate"][x-1]["currenciesPair"]["from"] + i_json["currenciesRate"][x-1]["currenciesPair"]["to"]
+            dftable['sell'][x] = i_json["numberOfUnits"]
+            dftable['buy'][x] = int(float(i_json["currenciesRate"][x-1]["sell"]["rate"]) * i_json["numberOfUnits"])
+            dftable['broker'][x] = self.C_BROKER_ID
+            dftable['rate_type'][x] = a_rate_type
 
-        return pd.concat([dftable, dftable2])
+        for x in range(1, len(i_indexes) + 1):
+            # sell
+            dftable['pair'][x + 8] = i_json["currenciesRate"][x-1]["currenciesPair"]["to"] + i_json["currenciesRate"][x-1]["currenciesPair"]["from"]
+            dftable['sell'][x + 8] = i_json["numberOfUnits"]
+            dftable['buy'][x + 8] = int(float(i_json["currenciesRate"][x-1]["buy"]["rate"]) * i_json["numberOfUnits"])
+            dftable['broker'][x + 8] = self.C_BROKER_ID
+            dftable['rate_type'][x + 8] = a_rate_type
+
+        return dftable
 
 
 class ScrapIK(ScrapBroker):
 
     def __init__(self):
-        self.C_URLS = [["https://klient.internetowykantor.pl/api/public/marketBrief", "1"]]
+        self.C_URLS = [["https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/PLN/EUR/", "1"],
+                       ["https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/EUR/PLN/", "1"],
+                       ["https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/PLN/USD/", "1"],
+                       ["https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/USD/PLN/", "1"],
+                       ["https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/PLN/CHF/", "1"],
+                       ["https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/CHF/PLN/", "1"],
+                       ["https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/PLN/GBP/", "1"],
+                       ["https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/GBP/PLN/", "1"],
+                       ["https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/PLN/NOK/", "1"],
+                       ["https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/NOK/PLN/", "1"]]
         ScrapBroker.__init__(self)
 
     def read_single_file(self, a_url, a_rate_type):
@@ -423,29 +423,16 @@ class ScrapIK(ScrapBroker):
             return None
 
         # json to table
-        dftable = s.get_json_table(i_url_content.json())
+        i_json = json.loads(i_url_content.text)
 
-        dftable = dftable.drop(columns=['ts', 'directExchangeOffers.forexOld', 'directExchangeOffers.buyOld',
-                                        'directExchangeOffers.sellOld', 'directExchangeOffers.forexNow'])
-        dftable = dftable.rename({'directExchangeOffers.buyNow': 'buy', 'directExchangeOffers.sellNow': 'sell'}, axis=1)
-        dftable['pair'] = dftable['pair'].str.replace('_', '')
-        dftable['qty'] = 1
-        dftable['broker'] = self.C_BROKER_ID
-        dftable['scan_id'] = 1
-        dftable['rate_type'] = a_rate_type
-        dftable['buy'] = (dftable['buy'] * 10000).apply(int)
-        dftable['sell'] = (dftable['sell'] * 10000).apply(int)
+        i_indexes = [1]
+        dftable = pd.DataFrame(columns=gv.G_OUTPUT_COLUMNS, index=i_indexes)
 
-        dftable = dftable[['scan_id', 'broker', 'pair', 'rate_type', 'qty', 'buy', 'sell']]
+        for x in range(1, len(i_indexes) + 1):
+            dftable['pair'][x] = a_url[-8:].replace('/', '')
+            dftable['sell'][x] = 50000
+            dftable['buy'][x] = int(float(i_json["result"]["exchangeAmount"]))
+            dftable['broker'][x] = self.C_BROKER_ID
+            dftable['rate_type'][x] = a_rate_type
 
-        dftable.drop('scan_id', axis=1, inplace=True)
-        dftable.drop('qty', axis=1, inplace=True)
-
-        # reverse
-        dftable2 = dftable.copy()
-
-        dftable2['pair'] = dftable2['pair'].str.slice(3, 6) + dftable2['pair'].str.slice(0, 3)
-        dftable2['buy'] = ((1 / (dftable2['buy'] / 10000)) * 10000).apply(int)
-        dftable2['sell'] = ((1 / (dftable2['sell'] / 10000)) * 10000).apply(int)
-
-        return pd.concat([dftable, dftable2])
+        return dftable
