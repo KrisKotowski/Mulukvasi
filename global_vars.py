@@ -13,9 +13,10 @@ G_STEPS = 0
 G_DELAY_SECONDS = 0
 G_SCAN_ID = 0
 G_PAIRS = 0
+G_QUOTES = 0
 G_DB_INI_FILE = 0
 G_PROGRAM_MODE = 0
-G_OUTPUT_COLUMNS = ['pair', 'buy', 'sell', 'broker', 'rate_type']
+G_OUTPUT_COLUMNS = ['pair', 'buy_qty', 'sell_qty', 'broker']
 G_CONST_MODE_PROD = 0
 G_CONST_MODE_TEST_DB = 1
 G_CONST_MODE_TEST_NODB = 2
@@ -58,6 +59,10 @@ def init(a_mode=0):
     global G_PAIRS
     G_PAIRS = G_DB.sql_to_df(
         'select currency1||currency2 pair, currency_pair_id pair_id from currency_pair where status=%s', '1')
+
+    global G_QUOTES
+    G_QUOTES = G_DB.sql_to_df(
+        'SELECT currency_quote from currency_quote where status=%s', '1')
 
     global G_STEPS
     G_STEPS = i_df['steps'].iloc[0]

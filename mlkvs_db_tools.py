@@ -109,10 +109,9 @@ class DatabaseTools:
             gv.G_SCAN_ID = DatabaseTools.sql_to_single_value(self, 'SELECT last_value from scan_scan_id_seq')
 
             for i_row in range(0, a_dftable_final.shape[0]):
-                i_sql = 'insert into hist (scan_id, broker_id, currency_pair_id, rate_id, buy_rate, sell_rate) values ({0}, {1}, {2}, {3}, {4}, {5})'.format(
+                i_sql = 'insert into hist (scan_id, broker_id, currency_pair_id, buy_qty, sell_qty) values ({0}, {1}, {2}, {3}, {4})'.format(
                     gv.G_SCAN_ID, a_dftable_final['broker'].iloc[i_row], a_dftable_final['pair_id'].iloc[i_row],
-                    a_dftable_final['rate_type'].iloc[i_row], a_dftable_final['buy'].iloc[i_row],
-                    a_dftable_final['sell'].iloc[i_row])
+                    a_dftable_final['buy_qty'].iloc[i_row], a_dftable_final['sell_qty'].iloc[i_row])
                 i_cursor = DatabaseTools.execute_sql(self, i_sql, 0)
 
             DatabaseTools.commit_sql(self, i_cursor)
