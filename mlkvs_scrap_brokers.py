@@ -271,15 +271,15 @@ class ScrapIK(ScrapBroker):
 
     def __init__(self):
         self.C_URLS = ["https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/PLN/EUR/",
-                       "https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/EUR/PLN/",
+                       "https://klient.internetowykantor.pl/api/public/directExchangeCompare/SELL/50000/EUR/PLN/",
                        "https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/PLN/USD/",
-                       "https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/USD/PLN/",
+                       "https://klient.internetowykantor.pl/api/public/directExchangeCompare/SELL/50000/USD/PLN/",
                        "https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/PLN/CHF/",
-                       "https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/CHF/PLN/",
+                       "https://klient.internetowykantor.pl/api/public/directExchangeCompare/SELL/50000/CHF/PLN/",
                        "https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/PLN/GBP/",
-                       "https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/GBP/PLN/",
+                       "https://klient.internetowykantor.pl/api/public/directExchangeCompare/SELL/50000/GBP/PLN/",
                        "https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/PLN/NOK/",
-                       "https://klient.internetowykantor.pl/api/public/directExchangeCompare/BUY/50000/NOK/PLN/"]
+                       "https://klient.internetowykantor.pl/api/public/directExchangeCompare/SELL/50000/NOK/PLN/"]
         ScrapBroker.__init__(self)
 
     def read_single_file(self, a_url):
