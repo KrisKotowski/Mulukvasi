@@ -63,83 +63,43 @@ def get_json_table(a_json_in):
 try:
 
     cookies = {
-        'appToken': 'dad99d7d8e52c2c8aaf9fda788d8acdc',
-        'gid': 'b498fa9c-adda-4935-957b-a50cf9d3c4e6',
-        '__cf_bm': 'DhH2VDXjJL_B7VZmiL3MkeQf8CS9AesqmSzh0smGppA-1671207227-0-ASWaoT2qx/kYIBC2kN38s4I6gZgrcxHzcUc0RkeRanyqq91xnptW/c2sRHWfuX/q26ouxAz0Ubtv8vb+C/N8/gJAQJ6ymH+Gm141/nPsFt7j',
-        'twCookieConsentGTM': 'true',
-        '_gcl_au': '1.1.1968403973.1671207195',
-        'gid': 'b498fa9c-adda-4935-957b-a50cf9d3c4e6',
-        'lux_uid': '167120719553634467',
-        '__pdst': '7664f14f7383421b814cd50a3337d74c',
-        '_gid': 'GA1.2.1409014136.1671207196',
-        '_rdt_uuid': '1671207195601.2ff5261a-e2ba-44af-bd4f-5d3266b2e787',
-        '_scid': 'db41ba03-0ec2-4f78-8d9e-0103c8303a57',
-        '_pk_ses.984.649b': '1',
-        'FPLC': 'CM7Sra2wTbTpUZ3ddOxEze2sI6SEXq0JhWvUwxKPEf%2Fh7x9HomI%2F9JPoQ0cXZROHElSBBKVUB%2FjBMjkndaIPy8lV5Bjfq9UDlO%2FKH8KFIfq9fZXL4GbXpTowi7dCKQ%3D%3D',
-        'FPID': 'FPID2.2.QhXCI%2BQY5viCrN4s0R58hlNX0xN%2BP9MVhSnBiqQh2u8%3D.1671207196',
-        'FPAU': '1.1.1968403973.1671207195',
-        '_ts_yjad': '1671207196480',
-        '_fbp': 'fb.1.1671207229780.2071022871',
-        'tatari-session-cookie': '5003a6dd-cc96-ae17-72fd-22dbc69837ff',
-        'localeData': 'en',
-        'twCookieConsent': '%7B%22policyId%22%3A%222020-01-31%22%2C%22expiry%22%3A1686932229964%2C%22isEu%22%3Afalse%2C%22status%22%3A%22accepted%22%7D',
-        '_tq_id.TV-7290902709-1.649b': 'c8b5c17942e264a6.1671207196.0.1671207431..',
-        '_pk_id.984.649b': '9936de1fd3b16efd.1671207196.1.1671207431.1671207196.',
-        '_ga': 'GA1.1.840754893.1671207196',
-        'mp_e605c449bdf99389fa3ba674d4f5d919_mixpanel': '%7B%22distinct_id%22%3A%20%221851bb610f84bf-0e9114e330f9f8-c457526-1fa400-1851bb610fab01%22%2C%22%24device_id%22%3A%20%221851bb610f84bf-0e9114e330f9f8-c457526-1fa400-1851bb610fab01%22%2C%22%24initial_referrer%22%3A%20%22%24direct%22%2C%22%24initial_referring_domain%22%3A%20%22%24direct%22%7D',
-        '_uetsid': '8bebce807d5c11ed8a76bf053a078265',
-        '_uetvid': '8bebf4307d5c11eda3983b617da30a5d',
-        'tatari-cookie-test': '80201575',
-        '_ga_MFT2R11DFX': 'GS1.1.1671207195.1.1.1671208326.0.0.0',
+        'sid': 'ba2191a1863fdc256fc3158c49ebb92cb50d3d67',
+        'fxID': 'msugb0qvtvvgsjurt5t29ajnk1',
+        'ln_or': 'eyI0ODUzOTI5IjoiZCJ9',
+        'cookie_consent_user_consent_token': 'IUdyfMyfKQNm',
+        'cookie_consent_user_accepted': 'true',
+        '_gcl_au': '1.1.1682682648.1672697396',
+        '_fbp': 'fb.1.1672697396304.1010728710',
+        '_gid': 'GA1.2.481276116.1672697396',
+        'cookie_consent_level': '%7B%22strictly-necessary%22%3Atrue%2C%22functionality%22%3Atrue%2C%22tracking%22%3Atrue%2C%22targeting%22%3Atrue%7D',
+        '_ga': 'GA1.2.1867842534.1672697377',
+        '_ga_E339RWGCP4': 'GS1.1.1672697376.1.1.1672697491.0.0.0',
     }
 
     headers = {
-        'authority': 'wise.com',
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-        'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7',
-        'cache-control': 'max-age=0',
-        # 'cookie': 'appToken=dad99d7d8e52c2c8aaf9fda788d8acdc; gid=b498fa9c-adda-4935-957b-a50cf9d3c4e6; __cf_bm=DhH2VDXjJL_B7VZmiL3MkeQf8CS9AesqmSzh0smGppA-1671207227-0-ASWaoT2qx/kYIBC2kN38s4I6gZgrcxHzcUc0RkeRanyqq91xnptW/c2sRHWfuX/q26ouxAz0Ubtv8vb+C/N8/gJAQJ6ymH+Gm141/nPsFt7j; twCookieConsentGTM=true; _gcl_au=1.1.1968403973.1671207195; gid=b498fa9c-adda-4935-957b-a50cf9d3c4e6; lux_uid=167120719553634467; __pdst=7664f14f7383421b814cd50a3337d74c; _gid=GA1.2.1409014136.1671207196; _rdt_uuid=1671207195601.2ff5261a-e2ba-44af-bd4f-5d3266b2e787; _scid=db41ba03-0ec2-4f78-8d9e-0103c8303a57; _pk_ses.984.649b=1; FPLC=CM7Sra2wTbTpUZ3ddOxEze2sI6SEXq0JhWvUwxKPEf%2Fh7x9HomI%2F9JPoQ0cXZROHElSBBKVUB%2FjBMjkndaIPy8lV5Bjfq9UDlO%2FKH8KFIfq9fZXL4GbXpTowi7dCKQ%3D%3D; FPID=FPID2.2.QhXCI%2BQY5viCrN4s0R58hlNX0xN%2BP9MVhSnBiqQh2u8%3D.1671207196; FPAU=1.1.1968403973.1671207195; _ts_yjad=1671207196480; _fbp=fb.1.1671207229780.2071022871; tatari-session-cookie=5003a6dd-cc96-ae17-72fd-22dbc69837ff; localeData=en; twCookieConsent=%7B%22policyId%22%3A%222020-01-31%22%2C%22expiry%22%3A1686932229964%2C%22isEu%22%3Afalse%2C%22status%22%3A%22accepted%22%7D; _tq_id.TV-7290902709-1.649b=c8b5c17942e264a6.1671207196.0.1671207431..; _pk_id.984.649b=9936de1fd3b16efd.1671207196.1.1671207431.1671207196.; _ga=GA1.1.840754893.1671207196; mp_e605c449bdf99389fa3ba674d4f5d919_mixpanel=%7B%22distinct_id%22%3A%20%221851bb610f84bf-0e9114e330f9f8-c457526-1fa400-1851bb610fab01%22%2C%22%24device_id%22%3A%20%221851bb610f84bf-0e9114e330f9f8-c457526-1fa400-1851bb610fab01%22%2C%22%24initial_referrer%22%3A%20%22%24direct%22%2C%22%24initial_referring_domain%22%3A%20%22%24direct%22%7D; _uetsid=8bebce807d5c11ed8a76bf053a078265; _uetvid=8bebf4307d5c11eda3983b617da30a5d; tatari-cookie-test=80201575; _ga_MFT2R11DFX=GS1.1.1671207195.1.1.1671208326.0.0.0',
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'Accept-Language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7',
+        'Connection': 'keep-alive',
+        # 'Cookie': 'sid=ba2191a1863fdc256fc3158c49ebb92cb50d3d67; fxID=msugb0qvtvvgsjurt5t29ajnk1; ln_or=eyI0ODUzOTI5IjoiZCJ9; cookie_consent_user_consent_token=IUdyfMyfKQNm; cookie_consent_user_accepted=true; _gcl_au=1.1.1682682648.1672697396; _fbp=fb.1.1672697396304.1010728710; _gid=GA1.2.481276116.1672697396; cookie_consent_level=%7B%22strictly-necessary%22%3Atrue%2C%22functionality%22%3Atrue%2C%22tracking%22%3Atrue%2C%22targeting%22%3Atrue%7D; _ga=GA1.2.1867842534.1672697377; _ga_E339RWGCP4=GS1.1.1672697376.1.1.1672697491.0.0.0',
+        'Origin': 'https://www.kantor.pl',
+        'Referer': 'https://www.kantor.pl/kursy-walut',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-origin',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+        'X-Requested-With': 'XMLHttpRequest',
         'sec-ch-ua': '"Not?A_Brand";v="8", "Chromium";v="108", "Google Chrome";v="108"',
         'sec-ch-ua-mobile': '?0',
         'sec-ch-ua-platform': '"Windows"',
-        'sec-fetch-dest': 'document',
-        'sec-fetch-mode': 'navigate',
-        'sec-fetch-site': 'none',
-        'sec-fetch-user': '?1',
-        'upgrade-insecure-requests': '1',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
     }
 
-    params = {
-        'source': 'EUR',
-        'target': 'PLN',
-        'length': '1',
-        'unit': 'day',
+    data = {
+        'getExchageRates': '1',
     }
 
-    i_url_content = requests.get('https://wise.com/gateway/v3/price?sourceAmount=100000&sourceCurrency=GBP&targetCurrency=USD',
-                            headers={'accept-language': 'pl,en-US;q=0.9,en;q=0.8,ru;q=0.7'}, cookies={}, params={}, timeout=2)
+    response = requests.post('https://www.kantor.pl/ajax', cookies=cookies, headers=headers, data=data)
 
-    i_json = json.loads(i_url_content.text)
-    a = s.get_json_table(i_json)
-    a = a.sort_values(by='targetAmount', ascending=False)
-    #a['rate'] = a['sourceAmount'] / a['targetAmount']
-    a_rate = a['sourceAmount'][1] / a['targetAmount'][1]
-    print(a_rate)
-    sys.exit()
-    print(i_json["rate"]["from"])
-    i_indexes = [1]
-    dftable = pd.DataFrame(columns=G_OUTPUT_COLUMNS, index=i_indexes)
-
-
-    for x in range(1, len(i_indexes)+1):
-        dftable['pair'][x] = i_json[x-1]["source"] + i_json[x-1]["target"]
-        dftable['buy'][x] = int(i_json[x-1]["value"] * 10000)
-        dftable['sell'][x] = int(i_json[x-1]["value"] * 10000)
-        dftable['broker'][x] = 9
-        dftable['rate_type'][x] = 1
-
-    print(dftable)
+    print(response.text)
 
     print('done downloading URL status code={0} "{1}"'.format(i_url_content.status_code, C_URL))
 except Exception as e:

@@ -3,6 +3,7 @@
 import mlkvs_scrap_tools as s
 import pandas as pd
 import time
+import math
 import global_vars as gv
 import sys
 import importlib
@@ -65,6 +66,8 @@ try:
 
     for i_step in range(1, gv.G_STEPS + 1):
 
+        i_start_time = time.time()
+
         gv.G_LOGGER.info('starting step {0}...'.format(i_step))
 
         # clear lists before next iteration
@@ -100,8 +103,16 @@ try:
         gv.G_LOGGER.info('done step {0}...'.format(i_step))
 
         if i_step < gv.G_STEPS:
-            gv.G_LOGGER.info('sleeping for {0} seconds...'.format(gv.G_DELAY_SECONDS))
-            time.sleep(gv.G_DELAY_SECONDS)
+
+            i_execution_time = math.ceil(time.time() - i_start_time)
+            i_sleep_seconds = gv.G_DELAY_SECONDS - i_execution_time
+
+            if i_sleep_seconds < 0:
+                i_sleep_seconds = 0
+            gv.G_LOGGER.info('sleeping for {0} - {1} = {2} seconds...'.format(gv.G_DELAY_SECONDS, i_execution_time, i_sleep_seconds))
+
+            time.sleep(i_sleep_seconds)
+
             if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_PROD, gv.G_CONST_MODE_TEST_DB]:
                 i_thread_DB.join()
 
