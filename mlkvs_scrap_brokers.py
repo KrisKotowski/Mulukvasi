@@ -19,11 +19,11 @@ class ScrapBroker:
     def __init__(self):
         self.c_df_urls = pd.DataFrame(self.C_URLS, columns=['url'])
 
-    def read_single_file(self, a_url, a_headers='', a_cookies='', a_params=''):
+    def read_single_file(self, a_method, a_url, a_headers='', a_cookies='', a_params=''):
         gv.G_LOGGER.info('{0} start file download "{1}"'.format(self.C_BROKER_NAME, a_url))
 
         i_start_time = time.time()
-        i_url_content = gv.G_URL.get_url_content(a_url, a_headers, a_cookies, a_params)
+        i_url_content = gv.G_URL.get_url_content(a_method, a_url, a_headers, a_cookies, a_params)
         i_end_time = time.time()
 
         if i_url_content is None:
@@ -62,6 +62,37 @@ class ScrapBroker:
             return None
 
 
+
+
+class ScrapeWorldRemit(ScrapBroker):
+
+    def __init__(self):
+        self.C_URLS = [
+            "https://www.worldremit.com/wa/api/calculations?sendCountry=pl&receiveCountry=us&sendCurrency=PLN&receiveCurrency=USD&payoutMethodCode=BNK&correspondentId=66&type=SEND&value=10000&locale=en",
+            "https://www.worldremit.com/wa/api/calculations?sendCountry=pl&receiveCountry=gb&sendCurrency=PLN&receiveCurrency=GBP&payoutMethodCode=BNK&correspondentId=1121&type=SEND&value=10000&locale=en"
+]
+        ScrapBroker.__init__(self)
+
+    def read_single_file(self, a_url):
+
+        i_url_content = ScrapBroker.read_single_file(self, 'POST', a_url)
+
+        if i_url_content is None:
+            return None
+
+        i_json = json.loads(i_url_content.text)
+
+        i_indexes = [1]
+        dftable = pd.DataFrame(columns=gv.G_OUTPUT_COLUMNS, index=i_indexes)
+
+        for x in range(1, len(i_indexes) + 1):
+            dftable['pair'][x] = i_json["send"]["currency"] + i_json["receive"]["currency"]
+            dftable['sell_qty'][x] = int(i_json["send"]["amount"])*(50000/int(i_json["send"]["amount"]))
+            dftable['buy_qty'][x] = int(i_json["receive"]["amount"])*(50000/int(i_json["send"]["amount"]))
+            dftable['broker'][x] = self.C_BROKER_ID
+
+        return dftable
+
 class ScrapeWise(ScrapBroker):
 
     def __init__(self):
@@ -85,7 +116,7 @@ class ScrapeWise(ScrapBroker):
 
     def read_single_file(self, a_url):
 
-        i_url_content = ScrapBroker.read_single_file(self, a_url, self.C_HEADERS, self.C_COOKIES, self.C_PARAMS)
+        i_url_content = ScrapBroker.read_single_file(self, 'GET', a_url, self.C_HEADERS, self.C_COOKIES, self.C_PARAMS)
 
         if i_url_content is None:
             return None
@@ -114,7 +145,7 @@ class ScrapMillenium(ScrapBroker):
 
     def read_single_file(self, a_url):
 
-        i_url_content = ScrapBroker.read_single_file(self, a_url)
+        i_url_content = ScrapBroker.read_single_file(self, 'GET', a_url)
 
         if i_url_content is None:
             return None
@@ -126,16 +157,16 @@ class ScrapMillenium(ScrapBroker):
 
         for x in range(1, 5):
             dftable['pair'][x] = i_json["items"][x - 1]["currency"] + "PLN"
-            dftable['buy_qty'][x] = int(i_json["items"][x - 1]["foreignExchangeBuy"] * 10000)
-            dftable['sell_qty'][x] = int(i_json["items"][x - 1]["foreignExchangeSale"] * 10000)
+            dftable['buy_qty'][x] = int(i_json["items"][x - 1]["foreignExchangeBuy"] * 50000)
+            dftable['sell_qty'][x] = int(i_json["items"][x - 1]["foreignExchangeSale"] * 50000)
             dftable['broker'][x] = self.C_BROKER_ID
 
         # reverse
         dftable2 = dftable.copy()
 
         dftable2['pair'] = dftable2['pair'].str.slice(3, 6) + dftable2['pair'].str.slice(0, 3)
-        dftable2['buy_qty'] = ((1 / (dftable2['sell'] / 10000)) * 10000).apply(int)
-        dftable2['sell_qty'] = ((1 / (dftable2['buy'] / 10000)) * 10000).apply(int)
+        dftable2['buy_qty'] = ((1 / (dftable2['sell_qty'] / 50000)) * 50000).apply(int)
+        dftable2['sell_qty'] = ((1 / (dftable2['buy_qty'] / 50000)) * 50000).apply(int)
 
         return pd.concat([dftable, dftable2])
 
@@ -163,7 +194,7 @@ class ScrapeRevolut(ScrapBroker):
 
     def read_single_file(self, a_url):
 
-        i_url_content = ScrapBroker.read_single_file(self, a_url, self.C_HEADERS, self.C_COOKIES, self.C_PARAMS)
+        i_url_content = ScrapBroker.read_single_file(self, 'GET', a_url, self.C_HEADERS, self.C_COOKIES, self.C_PARAMS)
 
         if i_url_content is None:
             return None
@@ -204,8 +235,8 @@ class ScrapTraderMade(ScrapBroker):
 
         dftable = pd.DataFrame(i_result, columns=['instrument', 'bid', 'ask'])
         dftable['pair'] = dftable['instrument']
-        dftable['buy_qty'] = ((dftable['bid']).astype(float) * 10000).apply(int)
-        dftable['sell_qty'] = ((dftable['ask']).astype(float) * 10000).apply(int)
+        dftable['buy_qty'] = ((dftable['bid']).astype(float) * 50000).apply(int)
+        dftable['sell_qty'] = ((dftable['ask']).astype(float) * 50000).apply(int)
         dftable['broker'] = self.C_BROKER_ID
 
         dftable.drop('instrument', axis=1, inplace=True)
@@ -216,8 +247,8 @@ class ScrapTraderMade(ScrapBroker):
         dftable2 = dftable.copy()
 
         dftable2['pair'] = dftable2['pair'].str.slice(3, 6) + dftable2['pair'].str.slice(0, 3)
-        dftable2['buy_qty'] = ((1 / (dftable2['buy'] / 10000)) * 10000).apply(int)
-        dftable2['sell_qty'] = ((1 / (dftable2['sell'] / 10000)) * 10000).apply(int)
+        dftable2['buy_qty'] = ((1 / (dftable2['buy'] / 50000)) * 50000).apply(int)
+        dftable2['sell_qty'] = ((1 / (dftable2['sell'] / 50000)) * 50000).apply(int)
 
         return pd.concat([dftable, dftable2])
 
@@ -235,7 +266,7 @@ class ScrapCinkciarz(ScrapBroker):
 
     def read_single_file(self, a_url):
 
-        i_url_content = ScrapBroker.read_single_file(self, a_url)
+        i_url_content = ScrapBroker.read_single_file(self, 'GET', a_url)
 
         if i_url_content is None:
             return None
@@ -283,7 +314,7 @@ class ScrapIK(ScrapBroker):
         ScrapBroker.__init__(self)
 
     def read_single_file(self, a_url):
-        i_url_content = ScrapBroker.read_single_file(self, a_url)
+        i_url_content = ScrapBroker.read_single_file(self, 'GET', a_url)
 
         if i_url_content is None:
             return None
