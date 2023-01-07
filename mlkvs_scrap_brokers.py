@@ -64,6 +64,25 @@ class ScrapBroker:
 
 
 
+class ScrapeGoogle(ScrapBroker):
+
+    def __init__(self):
+        ScrapBroker.__init__(self)
+
+    def read_single_file(self, a_url):
+
+        a_url = f'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJTzWu39tUxarwVcDEP9nMH0rl-4PlTdZUTxu1wsUzc0oCsS_v1tVnOKvLkXjCYMU0bOE64WYRS0JU/pub?gid=0&single=true&output=csv'
+
+        try:
+            dftable = pd.read_csv(a_url)
+        except Exception as e:
+            gv.G_LOGGER.error('error downloading URL "{0}" {1}'.format(e, a_url), exc_info=False)
+            return None
+
+        dftable['broker'] = self.C_BROKER_ID
+
+        return dftable
+
 class ScrapeWorldRemit(ScrapBroker):
 
     def __init__(self):
