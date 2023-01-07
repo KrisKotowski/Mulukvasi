@@ -74,7 +74,12 @@ class ScrapeGoogle(ScrapBroker):
         a_url = f'https://docs.google.com/spreadsheets/d/e/2PACX-1vTJTzWu39tUxarwVcDEP9nMH0rl-4PlTdZUTxu1wsUzc0oCsS_v1tVnOKvLkXjCYMU0bOE64WYRS0JU/pub?gid=0&single=true&output=csv'
 
         try:
+            gv.G_LOGGER.info('{0} start file download "{1}"'.format(self.C_BROKER_NAME, a_url))
+            i_start_time = time.time()
             dftable = pd.read_csv(a_url)
+            i_end_time = time.time()
+            gv.G_LOGGER.info('{0} done file download in {1} sec. "{2}"'.format(self.C_BROKER_NAME, '{:.2f}'.format(
+                i_end_time - i_start_time), a_url))
         except Exception as e:
             gv.G_LOGGER.error('error downloading URL "{0}" {1}'.format(e, a_url), exc_info=False)
             return None
