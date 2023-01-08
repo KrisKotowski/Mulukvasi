@@ -66,55 +66,64 @@ try:
 
     for i_step in range(1, gv.G_STEPS + 1):
 
-        i_start_time = time.time()
+        try:
+            i_start_time = time.time()
 
-        gv.G_LOGGER.info('starting step {0}...'.format(i_step))
+            gv.G_LOGGER.info('starting step {0}...'.format(i_step))
 
-        # clear lists before next iteration
-        i_dftable_final = pd.DataFrame()
-        i_df_output = pd.DataFrame()
-        i_threads.clear()
+            # clear lists before next iteration
+            i_dftable_final = pd.DataFrame()
+            i_df_output = pd.DataFrame()
+            i_threads.clear()
 
-        # multithread function call
-        for i_object in i_scraps:
-            i_thread_scrap = s.ThreadWithReturnValue(target=i_object.read_all_files)
-            if i_thread_scrap is not None:
-                i_threads.append(i_thread_scrap)
-                i_thread_scrap.start()
+            # multithread function call
+            for i_object in i_scraps:
+                i_thread_scrap = s.ThreadWithReturnValue(target=i_object.read_all_files)
+                if i_thread_scrap is not None:
+                    i_threads.append(i_thread_scrap)
+                    i_thread_scrap.start()
 
-        # multithread function join
-        if len(i_threads) > 0:
-            for index, thread in enumerate(i_threads):
-                i_df_output = thread.join()
-                i_frames = [i_df_output, i_dftable_final]
-                i_dftable_final = pd.concat(i_frames, ignore_index=True)
+            # multithread function join
+            if len(i_threads) > 0:
+                for index, thread in enumerate(i_threads):
+                    i_df_output = thread.join()
+                    i_frames = [i_df_output, i_dftable_final]
+                    i_dftable_final = pd.concat(i_frames, ignore_index=True)
 
-            # add pair id and join to eliminate 'unmonitored' pairs
-            i_dftable_final = pd.merge(i_dftable_final, gv.G_PAIRS, on='pair', how='right')
+                # add pair id and join to eliminate 'unmonitored' pairs
+                i_dftable_final = pd.merge(i_dftable_final, gv.G_PAIRS, on='pair', how='right')
 
-            if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_TEST_NODB, gv.G_CONST_MODE_TEST_DB]:
-                print(pd.merge(i_dftable_final, i_dftable_brokers, how='inner', on='broker'))
+                if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_TEST_NODB, gv.G_CONST_MODE_TEST_DB]:
+                    i_dftable_test_view = pd.merge(i_dftable_final, i_dftable_brokers, how='inner', on='broker')
+                    i_dftable_test_view['rate'] = i_dftable_test_view['buy_qty'] / i_dftable_test_view['sell_qty']
+                    i_dftable_test_view['rate'] = i_dftable_test_view['rate'].astype(float).round(4)
+                    i_dftable_test_view = i_dftable_test_view.sort_values(by=['pair','buy_qty','broker'], ascending=False)
+                    i_dftable_test_view = i_dftable_test_view.reset_index(drop=True)
+                    print(i_dftable_test_view)
 
-            # save to DB
-            if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_PROD, gv.G_CONST_MODE_TEST_DB]:
-                i_thread_DB = s.ThreadWithReturnValue(target=gv.G_DB.save_hist_db(i_dftable_final))
-                i_thread_DB.start()
+                # save to DB
+                if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_PROD, gv.G_CONST_MODE_TEST_DB]:
+                    i_thread_DB = s.ThreadWithReturnValue(target=gv.G_DB.save_hist_db(i_dftable_final))
+                    i_thread_DB.start()
 
-        gv.G_LOGGER.info('done step {0}...'.format(i_step))
+            gv.G_LOGGER.info('done step {0}...'.format(i_step))
 
-        if i_step < gv.G_STEPS:
+            if i_step < gv.G_STEPS:
 
-            i_execution_time = math.ceil(time.time() - i_start_time)
-            i_sleep_seconds = gv.G_DELAY_SECONDS - i_execution_time
+                i_execution_time = math.ceil(time.time() - i_start_time)
+                i_sleep_seconds = gv.G_DELAY_SECONDS - i_execution_time
 
-            if i_sleep_seconds < 0:
-                i_sleep_seconds = 0
-            gv.G_LOGGER.info('sleeping for {0} - {1} = {2} seconds...'.format(gv.G_DELAY_SECONDS, i_execution_time, i_sleep_seconds))
+                if i_sleep_seconds < 0:
+                    i_sleep_seconds = 0
+                gv.G_LOGGER.info('sleeping for {0} - {1} = {2} seconds...'.format(gv.G_DELAY_SECONDS, i_execution_time, i_sleep_seconds))
 
-            time.sleep(i_sleep_seconds)
+                time.sleep(i_sleep_seconds)
 
-            if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_PROD, gv.G_CONST_MODE_TEST_DB]:
-                i_thread_DB.join()
+                if gv.G_PROGRAM_MODE in [gv.G_CONST_MODE_PROD, gv.G_CONST_MODE_TEST_DB]:
+                    i_thread_DB.join()
+
+        except Exception as e:
+            gv.G_LOGGER.error('error during scraping loop on step {0} "{1}"'.format(i_step, e), exc_info=True)
 
     gv.G_LOGGER.info('done scraping')
 
